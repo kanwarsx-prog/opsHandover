@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Dashboard from './pages/Dashboard'
 import Workspace from './pages/Workspace'
+import Settings from './pages/Settings'
 
 // Simple router for prototype
 function App() {
@@ -17,12 +18,33 @@ function App() {
     setActiveWorkspaceId(null);
   };
 
+  const handleNavigate = (view) => {
+    if (view === 'settings') {
+      setCurrentView('settings');
+      setActiveWorkspaceId(null);
+    } else if (view === 'dashboard') {
+      navigateToDashboard();
+    } else {
+      // Assume ID
+      navigateToWorkspace(view);
+    }
+  };
+
   return (
     <div className="app-container">
-      {currentView === 'dashboard' ? (
-        <Dashboard onNavigate={navigateToWorkspace} />
-      ) : (
-        <Workspace workspaceId={activeWorkspaceId} onBack={navigateToDashboard} />
+      {currentView === 'dashboard' && (
+        <Dashboard onNavigate={handleNavigate} currentView="dashboard" />
+      )}
+      {currentView === 'workspace' && (
+        <Workspace
+          workspaceId={activeWorkspaceId}
+          onBack={navigateToDashboard}
+          currentView="workspace" // Though sidebar might still show Handovers active?
+          onNavigate={handleNavigate}
+        />
+      )}
+      {currentView === 'settings' && (
+        <Settings onNavigate={handleNavigate} />
       )}
     </div>
   )

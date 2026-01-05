@@ -5,7 +5,7 @@ import SignOffModal from '../components/SignOffModal';
 import { mockHandovers } from '../data/mockData';
 import '../styles/workspace.css';
 
-const Workspace = ({ workspaceId, onBack }) => {
+const Workspace = ({ workspaceId, onBack, onNavigate }) => {
     // In a real app, we'd fetch this. We'll use local state to simulate updates.
     const [project, setProject] = useState(
         mockHandovers.find(p => p.id === workspaceId) || mockHandovers[0]

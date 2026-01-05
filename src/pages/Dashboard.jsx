@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import { mockHandovers } from '../data/mockData';
 import '../styles/dashboard.css';
 
-const Dashboard = ({ onNavigate }) => {
+const Dashboard = ({ onNavigate, currentView }) => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'Ready': return 'var(--color-success)';
@@ -29,6 +29,8 @@ const Dashboard = ({ onNavigate }) => {
         <Layout
             title="Handovers Overview"
             actions={<button className="btn-primary">+ New Handover</button>}
+            currentView={currentView}
+            onNavigate={onNavigate}
         >
             <div className="handover-grid">
                 {mockHandovers.map(project => {

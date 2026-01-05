@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/layout.css';
 
-const Layout = ({ children, title, actions }) => {
+const Layout = ({ children, title, actions, currentView, onNavigate }) => {
     return (
         <div className="layout-container">
             <aside className="sidebar glass-panel">
@@ -11,10 +11,18 @@ const Layout = ({ children, title, actions }) => {
                 </div>
 
                 <nav className="nav-menu">
-                    <a href="#" className="nav-item active">
+                    <a
+                        href="#"
+                        className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`}
+                        onClick={(e) => { e.preventDefault(); onNavigate('dashboard'); }}
+                    >
                         <span className="icon">⊞</span> Handovers
                     </a>
-                    <a href="#" className="nav-item">
+                    <a
+                        href="#"
+                        className={`nav-item ${currentView === 'settings' ? 'active' : ''}`}
+                        onClick={(e) => { e.preventDefault(); onNavigate('settings'); }}
+                    >
                         <span className="icon">⚙</span> Settings
                     </a>
                 </nav>
