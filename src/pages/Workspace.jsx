@@ -69,6 +69,8 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
     return (
         <Layout
             title={project.name}
+            currentView="dashboard"
+            onNavigate={onNavigate}
             actions={
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <button className="btn-secondary" onClick={onBack}>Exit Workspace</button>
