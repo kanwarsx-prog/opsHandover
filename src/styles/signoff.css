@@ -1,0 +1,324 @@
+.signoff-modal {
+    max-width: 800px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    /* Force override of default modal background */
+    background-color: var(--color-bg-base) !important;
+    background-image: var(--color-bg-gradient) !important;
+    background-blend-mode: normal;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.signoff-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.signoff-header h2 {
+    font-size: 20px;
+    margin-bottom: var(--spacing-sm);
+    color: #fff;
+}
+
+.signoff-meta {
+    display: flex;
+    gap: var(--spacing-xl);
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.signoff-meta strong {
+    color: #fff;
+    font-weight: 500;
+}
+
+.signoff-scroll-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+}
+
+/* Snapshot */
+.readiness-snapshot {
+    display: flex;
+    gap: var(--spacing-xl);
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.snapshot-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: var(--spacing-xl);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-big {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.score-sub {
+    font-size: 10px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-dim);
+}
+
+.snapshot-stats {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-box.danger .stat-value {
+    color: var(--color-danger);
+}
+
+.stat-box.warning .stat-value {
+    color: var(--color-warning);
+}
+
+.stat-box.success .stat-value {
+    color: var(--color-success);
+}
+
+.stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.snapshot-disclaimer {
+    font-style: italic;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Exceptions */
+.exceptions-section {
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.exception-group h4 {
+    font-size: 14px;
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.exception-group.danger h4 {
+    color: var(--color-danger);
+}
+
+.exception-group.warning h4 {
+    color: var(--color-warning);
+}
+
+.exception-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ex-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: #fff;
+}
+
+.ex-reason {
+    font-size: 13px;
+    color: var(--color-danger);
+}
+
+.ex-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Decision Selection */
+.decision-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.decision-section h3 {
+    font-size: 16px;
+    margin-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-primary);
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.decision-option {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.decision-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.decision-option.selected {
+    border-color: var(--color-primary);
+    background: rgba(0, 242, 234, 0.05);
+}
+
+.decision-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: transparent;
+}
+
+.decision-title {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.decision-desc {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.disabled-reason {
+    display: block;
+    font-size: 12px;
+    color: var(--color-danger);
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+/* Conditional Fields */
+.conditional-fields {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 2px solid var(--color-primary);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.conditional-fields label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.conditional-fields textarea {
+    width: 100%;
+    min-height: 80px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    resize: vertical;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: var(--spacing-md);
+    cursor: pointer;
+}
+
+/* Actions */
+.signoff-actions {
+    padding: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* Align bottom to match button */
+}
+
+.legal-statement {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    max-width: 200px;
+    /* Don't let it squeeze buttons too much */
+}
+
+.actions-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.signer-identity {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.signer-identity strong {
+    color: #fff;
+}
+
+.action-buttons-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.cancel-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cancel-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
+}

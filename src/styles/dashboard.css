@@ -1,0 +1,158 @@
+.handover-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.handover-card {
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s var(--ease-spring), box-shadow 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.handover-card:hover {
+    transform: translateY(-4px);
+    background: var(--glass-bg-hover);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.handover-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.handover-card:hover::before {
+    opacity: 1;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.status-pill {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-full);
+}
+
+/* New Hierarchy: Larger Pill */
+.status-pill.large {
+    font-size: 13px;
+    /* Larger */
+    padding: 6px 12px;
+    border-width: 2px;
+    /* Thicker border */
+}
+
+.score-badge {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+}
+
+/* De-emphasized Score */
+.score-badge.muted {
+    font-size: 14px;
+    opacity: 0.6;
+    font-weight: 500;
+}
+
+.project-title {
+    font-size: 18px;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-main);
+}
+
+/* Risk Indicator */
+.risk-indicator {
+    margin-top: 4px;
+    margin-bottom: var(--spacing-lg);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+    /* Push to bottom */
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-item .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+}
+
+.meta-item .value {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Add New Card */
+.add-card {
+    border-style: dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    min-height: 200px;
+    /* Ensure consistency */
+}
+
+.add-card:hover {
+    opacity: 1;
+    border-style: solid;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.add-icon {
+    font-size: 48px;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Button */
+.btn-primary {
+    padding: 10px 20px;
+    background: var(--color-primary);
+    color: #000;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
