@@ -156,3 +156,19 @@
     background: #fff;
     box-shadow: 0 0 20px var(--color-primary-glow);
 }
+
+@media (max-width: 768px) {
+    .handover-grid {
+        grid-template-columns: 1fr;
+        /* Single column */
+        gap: var(--spacing-md);
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+        height: auto;
+        margin-bottom: var(--spacing-lg);
+    }
+}

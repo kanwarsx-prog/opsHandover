@@ -125,3 +125,48 @@
     overflow-y: auto;
     padding-bottom: var(--spacing-xl);
 }
+
+@media (max-width: 768px) {
+    .layout-container {
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: var(--spacing-md);
+        background: rgba(0, 0, 0, 0.2);
+        /* Slight contrast */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logo-area {
+        margin-bottom: var(--spacing-md);
+        justify-content: center;
+    }
+
+    .nav-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: var(--spacing-md);
+        padding-bottom: 4px;
+        /* Scrollbar space */
+    }
+
+    .nav-item {
+        white-space: nowrap;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-profile {
+        display: none;
+        /* Hide profile on mobile to save space */
+    }
+
+    .main-content {
+        padding: var(--spacing-md);
+    }
+}

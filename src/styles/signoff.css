@@ -322,3 +322,65 @@
 .btn-danger:hover {
     box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
 }
+
+@media (max-width: 768px) {
+    .signoff-modal {
+        height: 100vh;
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .readiness-snapshot {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .snapshot-score {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-right: 0;
+        padding-bottom: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--spacing-md);
+    }
+
+    .snapshot-stats {
+        justify-content: space-around;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .signoff-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .signoff-actions {
+        flex-direction: column-reverse;
+        /* Buttons on top of text */
+        gap: var(--spacing-lg);
+    }
+
+    .actions-column {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .action-buttons-row {
+        flex-direction: column-reverse;
+        gap: var(--spacing-md);
+    }
+
+    .cancel-wrapper {
+        justify-content: center;
+    }
+
+    .legal-statement {
+        max-width: 100%;
+        text-align: center;
+    }
+}
