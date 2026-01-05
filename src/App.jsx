@@ -23,6 +23,9 @@ function App() {
     if (view === 'settings') {
       setCurrentView('settings');
       setActiveWorkspaceId(null);
+    } else if (view === 'create') {
+      setCurrentView('create');
+      setActiveWorkspaceId(null);
     } else if (view === 'dashboard') {
       navigateToDashboard();
     } else {

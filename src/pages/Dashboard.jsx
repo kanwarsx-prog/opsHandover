@@ -28,7 +28,7 @@ const Dashboard = ({ onNavigate, currentView }) => {
     return (
         <Layout
             title="Handovers Overview"
-            actions={<button className="btn-primary">+ New Handover</button>}
+            actions={<button className="btn-primary" onClick={() => onNavigate('create')}>+ New Handover</button>}
             currentView={currentView}
             onNavigate={onNavigate}
         >
@@ -84,8 +84,12 @@ const Dashboard = ({ onNavigate, currentView }) => {
                     );
                 })}
 
-                {/* Placeholder for "Add New" visual */}
-                <div className="handover-card glass-panel add-card">
+                {/* "Add New" visual */}
+                <div
+                    className="handover-card glass-panel add-card"
+                    onClick={() => onNavigate('create')}
+                    style={{ cursor: 'pointer' }}
+                >
                     <div className="add-icon">+</div>
                     <span>Create New Workspace</span>
                 </div>
