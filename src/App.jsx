@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Dashboard from './pages/Dashboard'
 import Workspace from './pages/Workspace'
 import Settings from './pages/Settings'
+import NewHandover from './pages/NewHandover'
 
 // Simple router for prototype
 function App() {
@@ -45,6 +46,9 @@ function App() {
       )}
       {currentView === 'settings' && (
         <Settings onNavigate={handleNavigate} />
+      )}
+      {currentView === 'create' && (
+        <NewHandover onNavigate={handleNavigate} />
       )}
     </div>
   )
