@@ -28,11 +28,15 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                 </nav>
 
                 <div className="user-profile">
-                    <div className="avatar">SK</div>
+                    <div className="avatar">AM</div>
                     <div className="user-info">
-                        <div className="name">Sushil Kanwar</div>
+                        <div className="name">Alex Morgan</div>
                         <div className="role">Admin</div>
                     </div>
+                </div>
+
+                <div className="sidebar-footer" style={{ marginTop: 'auto', paddingTop: '20px', fontSize: '10px', color: 'var(--text-dim)', textAlign: 'center' }}>
+                    &copy; 2026 Everyday Systems
                 </div>
             </aside>
 

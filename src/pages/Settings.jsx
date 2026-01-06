@@ -36,11 +36,11 @@ const Settings = ({ onNavigate }) => {
                     <h3>User Profile</h3>
                     <div className="profile-card">
                         <div className="profile-header">
-                            <div className="loading-avatar">SK</div>
+                            <div className="loading-avatar">AM</div>
                             <div className="profile-details">
-                                <span className="profile-name">Sushil Kanwar</span>
+                                <span className="profile-name">Alex Morgan</span>
                                 <span className="profile-role">Global Administrator</span>
-                                <span className="profile-email">sushil.k@opshandover.com</span>
+                                <span className="profile-email">alex.morgan@everydaysystems.com</span>
                             </div>
                         </div>
                         <button className="btn-secondary">Edit Profile</button>
@@ -146,7 +146,7 @@ const Settings = ({ onNavigate }) => {
                         <tbody>
                             <tr>
                                 <td>Logged in</td>
-                                <td>Sushil Kanwar</td>
+                                <td>Alex Morgan</td>
                                 <td>Just now</td>
                             </tr>
                             <tr>
