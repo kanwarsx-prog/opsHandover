@@ -252,6 +252,17 @@
     border-radius: var(--radius-sm);
     font-family: inherit;
     resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.conditional-fields textarea.missing-field {
+    border-color: rgba(255, 68, 68, 0.5);
+    background: rgba(255, 68, 68, 0.05);
+}
+
+.required-star {
+    color: var(--color-danger);
+    margin-left: 4px;
 }
 
 .checkbox-label {
@@ -260,6 +271,11 @@
     gap: 8px;
     margin-top: var(--spacing-md);
     cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.checkbox-label.missing-text {
+    color: var(--color-warning);
 }
 
 /* Actions */

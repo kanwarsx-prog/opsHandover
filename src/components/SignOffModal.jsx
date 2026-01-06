@@ -165,13 +165,14 @@ const SignOffModal = ({ isOpen, onClose, project, onConfirm }) => {
                     {/* Justification & Acknowledgement */}
                     {decision === 'GO_LIVE_RISK' && (
                         <div className="conditional-fields fade-in">
-                            <label>Risk Justification (Mandatory)</label>
+                            <label>Risk Justification <span className="required-star">*</span></label>
                             <textarea
+                                className={!justification ? 'missing-field' : ''}
                                 placeholder="Why is it safe to proceed? What mitigations are in place?"
                                 value={justification}
                                 onChange={(e) => setJustification(e.target.value)}
                             />
-                            <label className="checkbox-label">
+                            <label className={`checkbox-label ${!riskAcknowledged ? 'missing-text' : ''}`}>
                                 <input
                                     type="checkbox"
                                     checked={riskAcknowledged}
@@ -184,8 +185,9 @@ const SignOffModal = ({ isOpen, onClose, project, onConfirm }) => {
 
                     {decision === 'NOT_READY' && (
                         <div className="conditional-fields fade-in">
-                            <label>Deferral Rationale (Mandatory)</label>
+                            <label>Deferral Rationale <span className="required-star">*</span></label>
                             <textarea
+                                className={!justification ? 'missing-field' : ''}
                                 placeholder="What criteria must be met before next review?"
                                 value={justification}
                                 onChange={(e) => setJustification(e.target.value)}
