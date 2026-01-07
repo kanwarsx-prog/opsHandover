@@ -19,6 +19,22 @@ const SignOffModal = ({ isOpen, onClose, project, onConfirm }) => {
     // Decision Logic
     const canGoLive = !hasBlockers;
 
+    // Auto-scroll to bottom when fields appear
+    React.useEffect(() => {
+        if (decision === 'GO_LIVE_RISK' || decision === 'NOT_READY') {
+            const scrollContainer = document.querySelector('.signoff-scroll-body');
+            if (scrollContainer) {
+                // Small timeout to allow render
+                setTimeout(() => {
+                    scrollContainer.scrollTo({
+                        top: scrollContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+        }
+    }, [decision]);
+
     const handleConfirm = () => {
         onConfirm({
             decision,
@@ -40,10 +56,16 @@ const SignOffModal = ({ isOpen, onClose, project, onConfirm }) => {
     };
 
     const getButtonLabel = () => {
+        if (!decision) return 'Select a Decision Option';
+
         switch (decision) {
             case 'GO_LIVE': return 'Confirm Go-Live';
-            case 'GO_LIVE_RISK': return 'Confirm Go-Live with Risks';
-            case 'NOT_READY': return 'Record Not Ready Decision';
+            case 'GO_LIVE_RISK':
+                if (!justification || !riskAcknowledged) return 'Complete Justification';
+                return 'Confirm Go-Live with Risks';
+            case 'NOT_READY':
+                if (!justification) return 'Provide Rationale';
+                return 'Record Not Ready Decision';
             default: return 'Confirm Decision';
         }
     };
