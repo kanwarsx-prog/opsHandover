@@ -13,6 +13,9 @@ DECLARE
     
     v_domain_id BIGINT;
 BEGIN
+    -- Delete existing system templates to make this migration idempotent
+    DELETE FROM template_libraries WHERE category = 'system';
+
     -- First, create the template records
     INSERT INTO template_libraries (name, description, category, is_public, created_by)
     VALUES 
