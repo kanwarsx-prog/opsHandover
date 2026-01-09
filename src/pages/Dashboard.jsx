@@ -211,18 +211,18 @@ const Dashboard = ({ onNavigate }) => {
                         </div>
                     )}
 
-                    {handovers.length === 0 && ({/* "Add New" visual */ }
-                        < div
-                        className="handover-card glass-panel add-card"
-                    onClick={() => onNavigate('create')}
-                    style={{ cursor: 'pointer' }}
-                    >
-                    <div className="add-icon">+</div>
-                    <span>Create New Workspace</span>
+                    {handovers.length === 0 && (
+                        <div
+                            className="handover-card glass-panel add-card"
+                            onClick={() => onNavigate('create')}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className="add-icon">+</div>
+                            <span>Create New Workspace</span>
+                        </div>
+                    )}
                 </div>
-                </div>
-    )
-}
+            )}
         </Layout >
     );
 };
