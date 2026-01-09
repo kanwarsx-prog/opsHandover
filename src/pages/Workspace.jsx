@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import SignOffModal from '../components/SignOffModal';
@@ -6,19 +6,16 @@ import AddCheckModal from '../components/AddCheckModal';
 import ApprovalPanel from '../components/ApprovalPanel';
 import EvidenceList from '../components/EvidenceList';
 import ApprovalBadge from '../components/ApprovalBadge';
-import { mockHandovers } from '../data/mockData';
+import { fetchHandoverById } from '../services/handoverService';
 import { createCheck, deleteCheck } from '../services/checkService';
 import '../styles/workspace.css';
 
 const Workspace = ({ workspaceId, onBack, onNavigate }) => {
-    // In a real app, we'd fetch this. We'll use local state to simulate updates.
-    const [project, setProject] = useState(
-        mockHandovers.find(p => p.id === workspaceId) || mockHandovers[0]
-    );
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [expandedDomains, setExpandedDomains] = useState(
-        project.domains?.reduce((acc, d) => ({ ...acc, [d.id]: true }), {}) || {}
-    );
+    const [expandedDomains, setExpandedDomains] = useState({});
 
     // Modal State
     const [modalOpen, setModalOpen] = useState(false);
@@ -26,6 +23,33 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
     const [selectedCheck, setSelectedCheck] = useState(null);
     const [evidenceUrl, setEvidenceUrl] = useState('');
     const [addCheckModal, setAddCheckModal] = useState({ open: false, domainId: null, domainTitle: '' });
+
+    // Fetch handover data from Supabase
+    useEffect(() => {
+        const loadHandover = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const data = await fetchHandoverById(workspaceId);
+                setProject(data);
+
+                // Initialize expanded domains
+                if (data?.domains) {
+                    const expanded = data.domains.reduce((acc, d) => ({ ...acc, [d.id]: true }), {});
+                    setExpandedDomains(expanded);
+                }
+            } catch (err) {
+                console.error('Error loading handover:', err);
+                setError('Failed to load workspace');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (workspaceId) {
+            loadHandover();
+        }
+    }, [workspaceId]);
 
     const toggleDomain = (id) => {
         setExpandedDomains(prev => ({ ...prev, [id]: !prev[id] }));
@@ -344,6 +368,7 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                 onAdd={handleAddCheck}
                 domainTitle={addCheckModal.domainTitle}
             />
+            )}
         </Layout>
     );
 };
