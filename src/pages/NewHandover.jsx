@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import TemplatePreview from '../components/TemplatePreview';
 import { createHandoverWithTemplate } from '../services/handoverService';
-import { getTemplate } from '../data/domainTemplates';
+import { fetchTemplates } from '../services/templateService';
 import '../styles/newHandover.css';
 
-const NewHandover = ({ onNavigate }) => {
+const NewHandover = ({ onBack, onNavigate }) => {
+    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         name: '',
-        type: 'cloud',
-        targetDate: '',
+        type: '',
+        goLiveDate: '',
         lead: '',
-        owner: '',
         description: ''
     });
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [creating, setCreating] = useState(false);
+    const [templates, setTemplates] = useState([]);
+    const [loadingTemplates, setLoadingTemplates] = useState(true);
+    const [error, setError] = useState(null); // Retained as it's used in handleSubmit and JSX
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    useEffect(() => {
+        loadTemplates();
+    }, []);
+
+    const loadTemplates = async () => {
+        try {
+            setLoadingTemplates(true);
+            const data = await fetchTemplates();
+            setTemplates(data);
+            // Set default type if templates are loaded and formData.type is empty
+            if (data.length > 0 && !formData.type) {
+                setFormData(prev => ({ ...prev, type: data[0].id }));
+            }
+        } catch (error) {
+            console.error('Error loading templates:', error);
+            setError(error.message || 'Failed to load templates.');
+            // Fallback to empty array if templates fail to load
+            setTemplates([]);
+        } finally {
+            setLoadingTemplates(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setCreating(true); // Changed from setLoading to setCreating
         setError(null);
 
         try {
@@ -115,6 +140,60 @@ const NewHandover = ({ onNavigate }) => {
                             />
                         </div>
                     </div>
+
+                    {step === 2 && (
+                        <div className="step-content">
+                            <h3>Select a Template</h3>
+                            <p className="step-description">
+                                Choose a readiness template that best matches your project type.
+                            </p>
+
+                            {loadingTemplates ? (
+                                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
+                                    Loading templates...
+                                </div>
+                            ) : templates.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
+                                    <p>No templates available.</p>
+                                    <button
+                                        className="btn-primary"
+                                        onClick={() => onNavigate('template-editor')}
+                                        style={{ marginTop: '16px' }}
+                                    >
+                                        Create a Template
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="template-grid">
+                                    {templates.map((template) => (
+                                        <div
+                                            key={template.id}
+                                            className={`template-option ${selectedTemplate?.id === template.id ? 'selected' : ''}`}
+                                            onClick={() => setSelectedTemplate(template)}
+                                        >
+                                            <div className="template-header">
+                                                <h4>{template.name}</h4>
+                                                {template.category === 'system' && (
+                                                    <span className="system-badge">System</span>
+                                                )}
+                                            </div>
+                                            <p>{template.description}</p>
+                                            <div className="template-stats">
+                                                <span>{template.domains?.length || 0} domains</span>
+                                                <span>
+                                                    {template.domains?.reduce((sum, d) => sum + (d.checks?.length || 0), 0) || 0} checks
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {selectedTemplate && (
+                                <TemplatePreview template={selectedTemplate} />
+                            )}
+                        </div>
+                    )}
 
                     <div className="form-row">
                         <div className="form-group">
