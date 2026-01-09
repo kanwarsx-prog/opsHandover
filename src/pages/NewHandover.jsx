@@ -45,23 +45,26 @@ const NewHandover = ({ onBack, onNavigate }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setCreating(true); // Changed from setLoading to setCreating
+
+        if (!selectedTemplate) {
+            setError('Please select a template');
+            return;
+        }
+
+        setCreating(true);
         setError(null);
 
         try {
-            // Get the template for the selected type
-            const template = getTemplate(formData.type);
-
-            // Create handover with template
+            // Create handover with selected template
             const handover = await createHandoverWithTemplate({
                 name: formData.name,
                 description: formData.description,
                 lead: formData.lead,
-                owner: formData.owner,
-                targetDate: formData.targetDate,
+                owner: formData.lead, // Use lead as owner for now
+                targetDate: formData.goLiveDate,
                 status: 'Not Ready',
                 score: 0
-            }, template);
+            }, selectedTemplate);
 
             console.log('✅ Workspace created successfully:', handover);
 
@@ -73,7 +76,7 @@ const NewHandover = ({ onBack, onNavigate }) => {
         } catch (err) {
             console.error('Error creating workspace:', err);
             setError(err.message || 'Failed to create workspace. Please try again.');
-            setLoading(false);
+            setCreating(false);
         }
     };
 
@@ -111,91 +114,21 @@ const NewHandover = ({ onBack, onNavigate }) => {
                             required
                             value={formData.name}
                             onChange={e => setFormData({ ...formData, name: e.target.value })}
-                            disabled={loading}
+                            disabled={creating}
                         />
                     </div>
 
                     <div className="form-row">
                         <div className="form-group">
-                            <label>Handover Type</label>
-                            <select
-                                value={formData.type}
-                                onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                disabled={loading}
-                            >
-                                <option value="cloud">Cloud / Infrastructure</option>
-                                <option value="product">SaaS Product Feature</option>
-                                <option value="legacy">Legacy Decommission</option>
-                                <option value="human">Process / People Change</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
                             <label>Target Go-Live Date</label>
                             <input
                                 type="date"
                                 required
-                                value={formData.targetDate}
-                                onChange={e => setFormData({ ...formData, targetDate: e.target.value })}
-                                disabled={loading}
+                                value={formData.goLiveDate}
+                                onChange={e => setFormData({ ...formData, goLiveDate: e.target.value })}
+                                disabled={creating}
                             />
                         </div>
-                    </div>
-
-                    {step === 2 && (
-                        <div className="step-content">
-                            <h3>Select a Template</h3>
-                            <p className="step-description">
-                                Choose a readiness template that best matches your project type.
-                            </p>
-
-                            {loadingTemplates ? (
-                                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
-                                    Loading templates...
-                                </div>
-                            ) : templates.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
-                                    <p>No templates available.</p>
-                                    <button
-                                        className="btn-primary"
-                                        onClick={() => onNavigate('template-editor')}
-                                        style={{ marginTop: '16px' }}
-                                    >
-                                        Create a Template
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="template-grid">
-                                    {templates.map((template) => (
-                                        <div
-                                            key={template.id}
-                                            className={`template-option ${selectedTemplate?.id === template.id ? 'selected' : ''}`}
-                                            onClick={() => setSelectedTemplate(template)}
-                                        >
-                                            <div className="template-header">
-                                                <h4>{template.name}</h4>
-                                                {template.category === 'system' && (
-                                                    <span className="system-badge">System</span>
-                                                )}
-                                            </div>
-                                            <p>{template.description}</p>
-                                            <div className="template-stats">
-                                                <span>{template.domains?.length || 0} domains</span>
-                                                <span>
-                                                    {template.domains?.reduce((sum, d) => sum + (d.checks?.length || 0), 0) || 0} checks
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {selectedTemplate && (
-                                <TemplatePreview template={selectedTemplate} />
-                            )}
-                        </div>
-                    )}
-
-                    <div className="form-row">
                         <div className="form-group">
                             <label>Project Lead</label>
                             <input
@@ -204,9 +137,76 @@ const NewHandover = ({ onBack, onNavigate }) => {
                                 required
                                 value={formData.lead}
                                 onChange={e => setFormData({ ...formData, lead: e.target.value })}
-                                disabled={loading}
+                                disabled={creating}
                             />
                         </div>
+                    </div>
+
+                    <div className="form-group full-width">
+                        <label>Description (Optional)</label>
+                        <textarea
+                            placeholder="Brief description of the project..."
+                            rows="3"
+                            value={formData.description}
+                            onChange={e => setFormData({ ...formData, description: e.target.value })}
+                            disabled={creating}
+                        />
+                    </div>
+
+                    {/* Template Selection Section - No longer conditional on 'step' */}
+                    <div className="step-content">
+                        <h3>Select a Template</h3>
+                        <p className="step-description">
+                            Choose a readiness template that best matches your project type.
+                        </p>
+
+                        {loadingTemplates ? (
+                            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
+                                Loading templates...
+                            </div>
+                        ) : templates.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-dim)' }}>
+                                <p>No templates available.</p>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => onNavigate('template-editor')}
+                                    style={{ marginTop: '16px' }}
+                                >
+                                    Create a Template
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="template-grid">
+                                {templates.map((template) => (
+                                    <div
+                                        key={template.id}
+                                        className={`template-option ${selectedTemplate?.id === template.id ? 'selected' : ''}`}
+                                        onClick={() => setSelectedTemplate(template)}
+                                    >
+                                        <div className="template-header">
+                                            <h4>{template.name}</h4>
+                                            {template.category === 'system' && (
+                                                <span className="system-badge">System</span>
+                                            )}
+                                        </div>
+                                        <p>{template.description}</p>
+                                        <div className="template-stats">
+                                            <span>{template.domains?.length || 0} domains</span>
+                                            <span>
+                                                {template.domains?.reduce((sum, d) => sum + (d.checks?.length || 0), 0) || 0} checks
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {selectedTemplate && (
+                            <TemplatePreview template={selectedTemplate} />
+                        )}
+                    </div>
+
+                    <div className="form-row">
                         <div className="form-group">
                             <label>BAU Owner (Accepter)</label>
                             <input
