@@ -255,6 +255,70 @@ const transformEvidenceFromDB = (dbEvidence) => {
  * @param {string} timestamp - ISO timestamp
  * @returns {string} Relative time string
  */
+/**
+ * Create handover with domains and checks from template
+ * @param {Object} handoverData - Handover data
+ * @param {Array} template - Domain template array
+ * @returns {Promise<Object>} Created handover with ID
+ */
+export const createHandoverWithTemplate = async (handoverData, template) => {
+    if (!isSupabaseConfigured()) {
+        throw new Error('Supabase not configured');
+    }
+
+    try {
+        // 1. Create the handover
+        const handover = await createHandover(handoverData);
+        console.log(`✓ Created handover: ${handover.name} (ID: ${handover.id})`);
+
+        // 2. Create domains and checks
+        for (let domainIndex = 0; domainIndex < template.length; domainIndex++) {
+            const domainTemplate = template[domainIndex];
+
+            // Create domain
+            const { data: domain, error: domainError } = await supabase
+                .from('domains')
+                .insert([{
+                    handover_id: handover.id,
+                    title: domainTemplate.title,
+                    sort_order: domainIndex
+                }])
+                .select()
+                .single();
+
+            if (domainError) throw domainError;
+            console.log(`  ✓ Created domain: ${domain.title} (ID: ${domain.id})`);
+
+            // Create checks for this domain
+            for (let checkIndex = 0; checkIndex < domainTemplate.checks.length; checkIndex++) {
+                const checkTemplate = domainTemplate.checks[checkIndex];
+
+                const { error: checkError } = await supabase
+                    .from('checks')
+                    .insert([{
+                        domain_id: domain.id,
+                        title: checkTemplate.title,
+                        owner: checkTemplate.owner,
+                        status: 'Not Ready',
+                        requires_approval: checkTemplate.requiresApproval || false,
+                        approval_status: checkTemplate.requiresApproval ? 'pending' : null,
+                        sort_order: checkIndex
+                    }]);
+
+                if (checkError) throw checkError;
+            }
+
+            console.log(`    ✓ Created ${domainTemplate.checks.length} checks`);
+        }
+
+        console.log(`✅ Workspace created successfully with ${template.length} domains`);
+        return handover;
+    } catch (error) {
+        console.error('Error creating handover with template:', error);
+        throw error;
+    }
+};
+
 const formatRelativeTime = (timestamp) => {
     if (!timestamp) return 'Never';
 
