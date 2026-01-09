@@ -258,7 +258,19 @@ export const mockHandovers = [
                         id: 'c34',
                         title: "GDPR Data Processing Impact Assessment",
                         status: 'Ready',
-                        owner: "DPO"
+                        owner: "DPO",
+                        requiresApproval: false,
+                        evidence: [
+                            {
+                                id: 'e5',
+                                title: 'DPIA Document',
+                                url: 'https://sharepoint.company.com/legal/dpia-supplier-portal.pdf',
+                                type: 'document',
+                                uploadedBy: 'DPO',
+                                uploadedAt: '2025-12-15T14:00:00Z',
+                                description: 'Data Processing Impact Assessment for supplier portal'
+                            }
+                        ]
                     },
                     {
                         id: 'c35',
@@ -270,13 +282,68 @@ export const mockHandovers = [
                         id: 'c36',
                         title: "Internal Audit Sign-off",
                         status: 'Ready',
-                        owner: "Audit Lead"
+                        owner: "Audit Lead",
+                        requiresApproval: true,
+                        approvalStatus: 'approved',
+                        approvals: [
+                            {
+                                id: 'a1',
+                                approver: 'Jane Smith',
+                                role: 'Internal Audit Lead',
+                                timestamp: '2026-01-08T14:30:00Z',
+                                decision: 'approved',
+                                comments: 'All controls verified and documented. Supplier segmentation controls meet audit requirements.'
+                            }
+                        ],
+                        evidence: [
+                            {
+                                id: 'e1',
+                                title: 'Audit Report Q4 2025',
+                                url: 'https://sharepoint.company.com/audit/supplier-excellence-q4-2025.pdf',
+                                type: 'document',
+                                uploadedBy: 'Jane Smith',
+                                uploadedAt: '2026-01-07T10:00:00Z',
+                                description: 'Final audit report with sign-off on supplier management controls'
+                            },
+                            {
+                                id: 'e2',
+                                title: 'Control Testing Results',
+                                url: 'https://confluence.company.com/audit/supplier-controls',
+                                type: 'link',
+                                uploadedBy: 'Audit Lead',
+                                uploadedAt: '2026-01-07T11:30:00Z',
+                                description: 'Detailed control testing documentation'
+                            }
+                        ]
                     },
                     {
                         id: 'c37',
                         title: "Change Advisory Board Approval",
-                        status: 'Ready',
-                        owner: "CAB Chair"
+                        status: 'At Risk',
+                        owner: "CAB Chair",
+                        requiresApproval: true,
+                        approvalStatus: 'pending',
+                        approvals: [],
+                        evidence: [
+                            {
+                                id: 'e3',
+                                title: 'Change Request CR-2025-1847',
+                                url: 'https://servicenow.company.com/change/CR-2025-1847',
+                                type: 'link',
+                                uploadedBy: 'Program Lead',
+                                uploadedAt: '2026-01-05T09:00:00Z',
+                                description: 'Formal change request submitted to CAB'
+                            },
+                            {
+                                id: 'e4',
+                                title: 'Risk Assessment',
+                                url: 'https://confluence.company.com/risk/supplier-excellence-assessment',
+                                type: 'document',
+                                uploadedBy: 'Risk Manager',
+                                uploadedAt: '2026-01-06T15:20:00Z',
+                                description: 'Comprehensive risk assessment for CAB review'
+                            }
+                        ]
                     },
                     {
                         id: 'c38',
@@ -426,7 +493,44 @@ export const mockHandovers = [
                 id: 'd2',
                 title: "Security & Risk",
                 checks: [
-                    { id: 'c3', title: "Penetration Testing Sign-off", status: 'Ready', owner: "InfoSec" },
+                    {
+                        id: 'c3',
+                        title: "Penetration Testing Sign-off",
+                        status: 'Ready',
+                        owner: "InfoSec",
+                        requiresApproval: true,
+                        approvalStatus: 'approved',
+                        approvals: [
+                            {
+                                id: 'a2',
+                                approver: 'Michael Chen',
+                                role: 'Chief Information Security Officer',
+                                timestamp: '2026-01-06T16:45:00Z',
+                                decision: 'approved',
+                                comments: 'Penetration test completed successfully. All critical and high vulnerabilities remediated.'
+                            }
+                        ],
+                        evidence: [
+                            {
+                                id: 'e6',
+                                title: 'Penetration Test Report',
+                                url: 'https://sharepoint.company.com/infosec/pentest-t24-dec2025.pdf',
+                                type: 'document',
+                                uploadedBy: 'InfoSec',
+                                uploadedAt: '2025-12-20T11:00:00Z',
+                                description: 'External penetration test report by CyberSec Partners'
+                            },
+                            {
+                                id: 'e7',
+                                title: 'Remediation Evidence',
+                                url: 'https://jira.company.com/browse/SEC-2847',
+                                type: 'link',
+                                uploadedBy: 'InfoSec',
+                                uploadedAt: '2026-01-05T14:30:00Z',
+                                description: 'Jira epic tracking all vulnerability remediations'
+                            }
+                        ]
+                    },
                     { id: 'c4', title: "Fraud Detection Rules Updated", status: 'Ready', owner: "Fraud Team" },
                     {
                         id: 'c202',
