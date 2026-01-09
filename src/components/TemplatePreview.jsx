@@ -1,21 +1,23 @@
 import React from 'react';
-import { getTemplateSummary } from '../data/domainTemplates';
 import '../styles/templatePreview.css';
 
-const TemplatePreview = ({ handoverType }) => {
-    const summary = getTemplateSummary(handoverType);
+const TemplatePreview = ({ template }) => {
+    if (!template) return null;
+
+    // Calculate total checks from template domains
+    const totalChecks = template.domains?.reduce((sum, domain) => sum + (domain.checks?.length || 0), 0) || 0;
 
     return (
         <div className="template-preview glass-panel">
             <div className="preview-header">
-                <h4>📋 Workspace Template</h4>
+                <h4>📋 Template Preview: {template.name}</h4>
                 <div className="preview-stats">
                     <span className="stat">
-                        <strong>{summary.domainCount}</strong> domains
+                        <strong>{template.domains?.length || 0}</strong> domains
                     </span>
                     <span className="stat-separator">•</span>
                     <span className="stat">
-                        <strong>{summary.checkCount}</strong> checks
+                        <strong>{totalChecks}</strong> checks
                     </span>
                 </div>
             </div>
@@ -26,12 +28,12 @@ const TemplatePreview = ({ handoverType }) => {
                 </p>
 
                 <ul className="domain-list">
-                    {summary.domains.map((domain, index) => (
+                    {template.domains?.map((domain, index) => (
                         <li key={index} className="domain-item">
                             <div className="domain-icon">✓</div>
                             <div className="domain-info">
                                 <span className="domain-title">{domain.title}</span>
-                                <span className="domain-checks">{domain.checkCount} checks</span>
+                                <span className="domain-checks">{domain.checks?.length || 0} checks</span>
                             </div>
                         </li>
                     ))}
@@ -46,3 +48,4 @@ const TemplatePreview = ({ handoverType }) => {
 };
 
 export default TemplatePreview;
+

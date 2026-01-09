@@ -231,8 +231,6 @@ const NewHandover = ({ onBack, onNavigate }) => {
                         />
                     </div>
 
-                    <TemplatePreview handoverType={formData.type} />
-
                     <div className="form-actions">
                         <button
                             type="button"
