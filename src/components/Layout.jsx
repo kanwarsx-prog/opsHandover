@@ -21,6 +21,13 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                     </a>
                     <a
                         href="#"
+                        className={`nav-item ${currentView === 'analytics' ? 'active' : ''}`}
+                        onClick={(e) => { e.preventDefault(); onNavigate('analytics'); }}
+                    >
+                        <span className="icon">📊</span> Analytics
+                    </a>
+                    <a
+                        href="#"
                         className={`nav-item ${currentView === 'settings' ? 'active' : ''}`}
                         onClick={(e) => { e.preventDefault(); onNavigate('settings'); }}
                     >

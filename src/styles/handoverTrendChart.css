@@ -1,0 +1,39 @@
+.trend-chart-container {
+    padding: 24px;
+    margin: 24px 0;
+}
+
+.trend-chart-empty {
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.trend-chart-empty p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.chart-header {
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.chart-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trend-chart-container {
+        padding: 16px;
+    }
+}

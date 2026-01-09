@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard'
 import Workspace from './pages/Workspace'
 import Settings from './pages/Settings'
 import NewHandover from './pages/NewHandover'
+import Analytics from './pages/Analytics'
 
 // Simple router for prototype
 function App() {
@@ -25,6 +26,9 @@ function App() {
       setActiveWorkspaceId(null);
     } else if (view === 'create') {
       setCurrentView('create');
+      setActiveWorkspaceId(null);
+    } else if (view === 'analytics') {
+      setCurrentView('analytics');
       setActiveWorkspaceId(null);
     } else if (view === 'dashboard') {
       navigateToDashboard();
@@ -52,6 +56,9 @@ function App() {
       )}
       {currentView === 'create' && (
         <NewHandover onNavigate={handleNavigate} />
+      )}
+      {currentView === 'analytics' && (
+        <Analytics onNavigate={handleNavigate} />
       )}
     </div>
   )
