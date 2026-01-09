@@ -13,6 +13,14 @@ DECLARE
     
     v_domain_id BIGINT;
 BEGIN
+    -- First, create the template records
+    INSERT INTO template_libraries (name, description, category, is_public, created_by)
+    VALUES 
+        ('Cloud / Infrastructure', 'Comprehensive checklist for cloud infrastructure migrations and deployments', 'system', true, 'system'),
+        ('SaaS Product Feature', 'End-to-end readiness for SaaS product feature launches', 'system', true, 'system'),
+        ('Legacy Decommission', 'Structured approach to safely decommissioning legacy systems', 'system', true, 'system'),
+        ('Process / People Change', 'Change management checklist for organizational transformations', 'system', true, 'system');
+
     -- Get template IDs
     SELECT id INTO v_cloud_template_id FROM template_libraries WHERE name = 'Cloud / Infrastructure';
     SELECT id INTO v_saas_template_id FROM template_libraries WHERE name = 'SaaS Product Feature';

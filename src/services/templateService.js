@@ -37,10 +37,54 @@ export async function fetchTemplates(filters = {}) {
             query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
         }
 
-        const { data, error } = await query;
+        const { data: templates, error } = await query;
 
         if (error) throw error;
-        return data || [];
+
+        // Fetch domains and checks for each template
+        const templatesWithDomains = await Promise.all(
+            (templates || []).map(async (template) => {
+                // Fetch domains for this template
+                const { data: domains, error: domainsError } = await supabase
+                    .from('template_domains')
+                    .select('*')
+                    .eq('template_id', template.id)
+                    .order('order_index', { ascending: true });
+
+                if (domainsError) {
+                    console.error('Error fetching domains:', domainsError);
+                    return { ...template, domains: [] };
+                }
+
+                // Fetch checks for each domain
+                const domainsWithChecks = await Promise.all(
+                    (domains || []).map(async (domain) => {
+                        const { data: checks, error: checksError } = await supabase
+                            .from('template_checks')
+                            .select('*')
+                            .eq('domain_id', domain.id)
+                            .order('order_index', { ascending: true });
+
+                        if (checksError) {
+                            console.error('Error fetching checks:', checksError);
+                            return { ...domain, checks: [] };
+                        }
+
+                        return {
+                            ...domain,
+                            checks: checks || []
+                        };
+                    })
+                );
+
+                return {
+                    ...template,
+                    domains: domainsWithChecks
+                };
+            })
+        );
+
+        return templatesWithDomains;
     } catch (error) {
         console.error('Error fetching templates:', error);
         throw error;
