@@ -210,14 +210,14 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
             currentView="dashboard"
             onNavigate={onNavigate}
             actions={
-                <>
+                <div style={{ display: 'flex', gap: '8px' }}>
                     <button className="btn-secondary" onClick={onBack}>← Back to Dashboard</button>
                     {project && (
                         <button className="btn-primary" onClick={() => setShowSignOff(true)}>
                             Proceed to Go-Live Decision
                         </button>
                     )}
-                </>
+                </div>
             }
         >
             {loading && (
