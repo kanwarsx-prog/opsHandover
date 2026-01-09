@@ -389,7 +389,6 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                 onAdd={handleAddCheck}
                 domainTitle={addCheckModal.domainTitle}
             />
-            )}
         </Layout>
     );
 };
