@@ -35,6 +35,10 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                     </a>
                 </nav>
 
+                <div className="sidebar-footer">
+                    <ThemeToggle />
+                </div>
+
                 <div className="user-profile">
                     <div className="avatar">AM</div>
                     <div className="user-info">
@@ -54,7 +58,6 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                         <h2>{title}</h2>
                     </div>
                     <div className="page-actions">
-                        <ThemeToggle />
                         {actions}
                     </div>
                 </header>

@@ -14,6 +14,11 @@
     flex-shrink: 0;
 }
 
+/* Light mode: Add border to sidebar for better contrast */
+[data-theme="light"] .sidebar {
+    border-right: 1px solid var(--border-color);
+}
+
 .logo-area {
     display: flex;
     align-items: center;
@@ -53,7 +58,7 @@
     gap: var(--spacing-md);
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 14px;
     transition: all 0.2s ease;
 }
@@ -68,6 +73,11 @@
     border: 1px solid var(--border-color);
     color: var(--primary);
     font-weight: 500;
+}
+
+.sidebar-footer {
+    padding: var(--spacing-md) 0;
+    margin-top: auto;
 }
 
 .user-profile {
@@ -165,6 +175,11 @@
     .user-profile {
         display: none;
         /* Hide profile on mobile to save space */
+    }
+
+    .sidebar-footer {
+        display: none;
+        /* Hide theme toggle on mobile sidebar */
     }
 
     .main-content {
