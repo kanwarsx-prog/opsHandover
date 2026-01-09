@@ -215,3 +215,31 @@ export const createCheck = async (domainId, checkData) => {
         throw error;
     }
 };
+
+/**
+ * Delete a check
+ * @param {string} checkId - Check ID (e.g., 'c123')
+ * @returns {Promise<void>}
+ */
+export const deleteCheck = async (checkId) => {
+    if (!isSupabaseConfigured()) {
+        throw new Error('Supabase not configured');
+    }
+
+    try {
+        const numericId = parseInt(checkId.replace('c', ''));
+
+        const { error } = await supabase
+            .from('checks')
+            .delete()
+            .eq('id', numericId);
+
+        if (error) throw error;
+
+        console.log(`✓ Deleted check ID: ${checkId}`);
+    } catch (error) {
+        console.error('Error deleting check:', error);
+        throw error;
+    }
+};
+
