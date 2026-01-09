@@ -215,7 +215,7 @@ const NewHandover = ({ onBack, onNavigate }) => {
                                 required
                                 value={formData.owner}
                                 onChange={e => setFormData({ ...formData, owner: e.target.value })}
-                                disabled={loading}
+                                disabled={creating}
                             />
                         </div>
                     </div>
@@ -227,7 +227,7 @@ const NewHandover = ({ onBack, onNavigate }) => {
                             placeholder="Briefly describe what is changing and the scope of this handover..."
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
-                            disabled={loading}
+                            disabled={creating}
                         />
                     </div>
 
@@ -238,16 +238,16 @@ const NewHandover = ({ onBack, onNavigate }) => {
                             type="button"
                             className="btn-secondary"
                             onClick={() => onNavigate('dashboard')}
-                            disabled={loading}
+                            disabled={creating}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             className="btn-primary"
-                            disabled={loading}
+                            disabled={creating}
                         >
-                            {loading ? (
+                            {creating ? (
                                 <>
                                     <span className="spinner"></span>
                                     Creating Workspace...
