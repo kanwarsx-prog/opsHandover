@@ -57,21 +57,21 @@
    THEME SYSTEM - Light Mode
    ============================================================================ */
 [data-theme="light"] {
-  /* Background - Soft lavender/purple tones */
-  --color-bg-base: #e8e4f3;
-  --color-bg-gradient: linear-gradient(135deg, #f0ecf9 0%, #d8d0eb 50%, #e8e4f3 100%);
+  /* Background - Subtle lavender/purple tones */
+  --color-bg-base: #f0edf7;
+  --color-bg-gradient: linear-gradient(135deg, #f8f6fb 0%, #e8e3f0 50%, #f0edf7 100%);
 
   /* Glassmorphism - Adapted for light */
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-bg-hover: rgba(255, 255, 255, 0.8);
-  --glass-border: 1px solid rgba(100, 80, 150, 0.15);
-  --glass-shadow: 0 8px 32px 0 rgba(100, 80, 150, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-border: 1px solid rgba(120, 100, 160, 0.12);
+  --glass-shadow: 0 8px 32px 0 rgba(100, 80, 150, 0.08);
   --glass-blur: blur(12px);
 
   /* Accents - Vibrant but readable on light purple */
-  --color-primary: #5b21b6;
-  /* Deep Purple */
-  --color-primary-glow: rgba(91, 33, 182, 0.3);
+  --color-primary: #6d28d9;
+  /* Rich Purple */
+  --color-primary-glow: rgba(109, 40, 217, 0.25);
   --color-secondary: #db2777;
   /* Pink */
   --color-success: #059669;
@@ -82,9 +82,9 @@
   /* Red */
 
   /* Typography */
-  --text-main: #1f1f1f;
-  --text-muted: rgba(0, 0, 0, 0.75);
-  --text-dim: rgba(0, 0, 0, 0.55);
+  --text-main: #2d2d2d;
+  --text-muted: rgba(0, 0, 0, 0.72);
+  --text-dim: rgba(0, 0, 0, 0.50);
 }
 
 /* ============================================================================
