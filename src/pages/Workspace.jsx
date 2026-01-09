@@ -3,6 +3,9 @@ import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import SignOffModal from '../components/SignOffModal';
 import AddCheckModal from '../components/AddCheckModal';
+import ApprovalPanel from '../components/ApprovalPanel';
+import EvidenceList from '../components/EvidenceList';
+import ApprovalBadge from '../components/ApprovalBadge';
 import { mockHandovers } from '../data/mockData';
 import { createCheck, deleteCheck } from '../services/checkService';
 import '../styles/workspace.css';
@@ -30,14 +33,62 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
 
     const openEvidenceModal = (check) => {
         setSelectedCheck(check);
-        setEvidenceUrl(check.evidence || ''); // Mock existing evidence
         setModalOpen(true);
     };
 
-    const saveEvidence = () => {
-        // Save logic (mock)
-        console.log(`Saved evidence for ${selectedCheck.id}: ${evidenceUrl}`);
-        setModalOpen(false);
+    const handleEvidenceAdded = (evidence) => {
+        setProject(prev => {
+            const newDomains = prev.domains.map(d => ({
+                ...d,
+                checks: d.checks.map(c => {
+                    if (c.id === selectedCheck.id) {
+                        return {
+                            ...c,
+                            evidence: [...(c.evidence || []), evidence]
+                        };
+                    }
+                    return c;
+                })
+            }));
+            return { ...prev, domains: newDomains };
+        });
+    };
+
+    const handleEvidenceRemoved = (evidenceId) => {
+        setProject(prev => {
+            const newDomains = prev.domains.map(d => ({
+                ...d,
+                checks: d.checks.map(c => {
+                    if (c.id === selectedCheck.id) {
+                        return {
+                            ...c,
+                            evidence: (c.evidence || []).filter(e => e.id !== evidenceId)
+                        };
+                    }
+                    return c;
+                })
+            }));
+            return { ...prev, domains: newDomains };
+        });
+    };
+
+    const handleApprovalAdded = (approval) => {
+        setProject(prev => {
+            const newDomains = prev.domains.map(d => ({
+                ...d,
+                checks: d.checks.map(c => {
+                    if (c.id === selectedCheck.id) {
+                        return {
+                            ...c,
+                            approvals: [...(c.approvals || []), approval],
+                            approvalStatus: approval.decision
+                        };
+                    }
+                    return c;
+                })
+            }));
+            return { ...prev, domains: newDomains };
+        });
     };
 
     const getStatusClass = (status) => {
@@ -184,7 +235,22 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                                             {domain.checks.map(check => (
                                                 <div key={check.id} className={`check-item glass-panel ${check.status === 'Not Ready' ? 'heavy-alert' : ''}`}>
                                                     <div className="check-info">
-                                                        <span className="check-title">{check.title}</span>
+                                                        <div className="check-title-row">
+                                                            <span className="check-title">{check.title}</span>
+                                                            <div className="check-badges">
+                                                                {check.requiresApproval && (
+                                                                    <ApprovalBadge
+                                                                        approvalStatus={check.approvalStatus}
+                                                                        requiresApproval={check.requiresApproval}
+                                                                    />
+                                                                )}
+                                                                {check.evidence && check.evidence.length > 0 && (
+                                                                    <span className="evidence-count">
+                                                                        📎 {check.evidence.length}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                         <span className="check-owner">{check.owner}</span>
                                                         {check.status === 'Not Ready' && check.blockerReason && (
                                                             <div className="check-reason">
@@ -238,33 +304,27 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                 </div>
             </div>
 
+
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                title="Attach Evidence"
+                title={`Check Details: ${selectedCheck?.title || ''}`}
             >
-                <div className="evidence-form">
-                    <p style={{ marginBottom: '16px', fontSize: '14px', color: 'var(--text-muted)' }}>
-                        Provide a link to the supporting document (SharePoint, Confluence, etc.) for:
-                        <br /><strong>{selectedCheck?.title}</strong>
-                    </p>
+                {selectedCheck && (
+                    <div className="check-details-modal">
+                        <ApprovalPanel
+                            check={selectedCheck}
+                            onApprovalAdded={handleApprovalAdded}
+                            canApprove={true}
+                        />
 
-                    <div className="form-group">
-                        <label>Evidence URL</label>
-                        <input
-                            type="text"
-                            className="form-input"
-                            placeholder="https://"
-                            value={evidenceUrl}
-                            onChange={(e) => setEvidenceUrl(e.target.value)}
+                        <EvidenceList
+                            check={selectedCheck}
+                            onEvidenceAdded={handleEvidenceAdded}
+                            onEvidenceRemoved={handleEvidenceRemoved}
                         />
                     </div>
-
-                    <div className="modal-actions">
-                        <button className="btn-secondary" onClick={() => setModalOpen(false)}>Cancel</button>
-                        <button className="btn-primary" onClick={saveEvidence}>Save Link</button>
-                    </div>
-                </div>
+                )}
             </Modal>
 
             <SignOffModal
