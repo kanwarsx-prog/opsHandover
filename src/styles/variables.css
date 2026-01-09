@@ -1,4 +1,8 @@
-:root {
+/* ============================================================================
+   THEME SYSTEM - Dark Mode (Default)
+   ============================================================================ */
+:root,
+[data-theme="dark"] {
   /* Brand Identity: Premium Deep Tech */
   --color-bg-base: #0a0b1e;
   --color-bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
@@ -47,4 +51,100 @@
 
   /* Animation */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ============================================================================
+   THEME SYSTEM - Light Mode
+   ============================================================================ */
+[data-theme="light"] {
+  /* Background */
+  --color-bg-base: #f5f7fa;
+  --color-bg-gradient: linear-gradient(135deg, #ffffff 0%, #e8ecf1 50%, #f5f7fa 100%);
+
+  /* Glassmorphism - Adapted for light */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.9);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  --glass-blur: blur(12px);
+
+  /* Accents - Adjusted for light background */
+  --color-primary: #0099ff;
+  /* Bright Blue */
+  --color-primary-glow: rgba(0, 153, 255, 0.3);
+  --color-secondary: #e91e63;
+  /* Pink */
+  --color-success: #00c853;
+  /* Green */
+  --color-warning: #ff9800;
+  /* Orange */
+  --color-danger: #f44336;
+  /* Red */
+
+  /* Typography */
+  --text-main: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, 0.7);
+  --text-dim: rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================================
+   THEME SYSTEM - High Contrast Mode
+   ============================================================================ */
+[data-theme="high-contrast"] {
+  /* Background - Pure black */
+  --color-bg-base: #000000;
+  --color-bg-gradient: none;
+
+  /* Glassmorphism - Solid for high contrast */
+  --glass-bg: rgba(0, 0, 0, 0.95);
+  --glass-bg-hover: rgba(20, 20, 20, 1);
+  --glass-border: 2px solid #ffffff;
+  --glass-shadow: 0 0 0 2px #ffffff;
+  --glass-blur: none;
+
+  /* Accents - Maximum contrast */
+  --color-primary: #00ff00;
+  /* Bright Green */
+  --color-primary-glow: rgba(0, 255, 0, 0.5);
+  --color-secondary: #ff00ff;
+  /* Magenta */
+  --color-success: #00ff00;
+  /* Bright Green */
+  --color-warning: #ffff00;
+  /* Yellow */
+  --color-danger: #ff0000;
+  /* Red */
+
+  /* Typography - Maximum contrast */
+  --text-main: #ffffff;
+  --text-muted: #ffffff;
+  --text-dim: #cccccc;
+}
+
+/* ============================================================================
+   FONT SIZE SYSTEM
+   ============================================================================ */
+:root {
+  --base-font-size: 16px;
+}
+
+[data-font-size="small"] {
+  --base-font-size: 14px;
+}
+
+[data-font-size="medium"] {
+  --base-font-size: 16px;
+}
+
+[data-font-size="large"] {
+  --base-font-size: 18px;
+}
+
+[data-font-size="xlarge"] {
+  --base-font-size: 20px;
+}
+
+/* Apply base font size to body */
+body {
+  font-size: var(--base-font-size);
 }

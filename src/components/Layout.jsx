@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeToggle from './ThemeToggle';
 import '../styles/layout.css';
 
 const Layout = ({ children, title, actions, currentView, onNavigate }) => {
@@ -46,6 +47,7 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                         <h2>{title}</h2>
                     </div>
                     <div className="page-actions">
+                        <ThemeToggle />
                         {actions}
                     </div>
                 </header>
