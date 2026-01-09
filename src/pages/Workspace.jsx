@@ -3,9 +3,6 @@ import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import SignOffModal from '../components/SignOffModal';
 import AddCheckModal from '../components/AddCheckModal';
-import ApprovalPanel from '../components/ApprovalPanel';
-import EvidenceList from '../components/EvidenceList';
-import ApprovalBadge from '../components/ApprovalBadge';
 import { mockHandovers } from '../data/mockData';
 import { createCheck, deleteCheck } from '../services/checkService';
 import '../styles/workspace.css';
@@ -38,81 +35,11 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
     };
 
     const saveEvidence = () => {
-        // In a real app, this would POST to API
-        alert(`Saved evidence for: ${selectedCheck.title}`);
+        // Save logic (mock)
+        console.log(`Saved evidence for ${selectedCheck.id}: ${evidenceUrl}`);
         setModalOpen(false);
-        setEvidenceUrl('');
     };
 
-    const handleAddCheck = async (checkData) => {
-        try {
-            // Extract numeric domain ID
-            const numericDomainId = parseInt(addCheckModal.domainId.replace('d', ''));
-
-            // Create check in database
-            const created = await createCheck(numericDomainId, {
-                title: checkData.title,
-                owner: checkData.owner,
-                status: 'Not Ready',
-                requiresApproval: checkData.requiresApproval,
-                approvalStatus: checkData.requiresApproval ? 'pending' : null
-            });
-
-            // Update local state
-            setProject(prev => {
-                const newDomains = prev.domains.map(d => {
-                    if (d.id === addCheckModal.domainId) {
-                        return {
-                            ...d,
-                            checks: [...d.checks, {
-                                id: `c${created.id}`,
-                                title: created.title,
-                                owner: created.owner,
-                                status: created.status,
-                                requiresApproval: created.requires_approval,
-                                approvalStatus: created.approval_status,
-                                approvals: [],
-                                evidence: []
-                            }]
-                        };
-                    }
-                    return d;
-                });
-                return { ...prev, domains: newDomains };
-            });
-
-            // Close modal
-            setAddCheckModal({ open: false, domainId: null, domainTitle: '' });
-        } catch (error) {
-            console.error('Error adding check:', error);
-            alert('Failed to add check. Please try again.');
-        }
-    };
-
-    const handleDeleteCheck = async (domainId, checkId) => {
-        if (!confirm('Are you sure you want to delete this check?')) return;
-
-        try {
-            await deleteCheck(checkId);
-
-            // Update local state
-            setProject(prev => {
-                const newDomains = prev.domains.map(d => {
-                    if (d.id === domainId) {
-                        return {
-                            ...d,
-                            checks: d.checks.filter(c => c.id !== checkId)
-                        };
-                    }
-                    return d;
-                });
-                return { ...prev, domains: newDomains };
-            });
-        } catch (error) {
-            console.error('Error deleting check:', error);
-            alert('Failed to delete check. Please try again.');
-        }
-    };
     const getStatusClass = (status) => {
         switch (status) {
             case 'Ready': return 'status-ready';
@@ -140,6 +67,66 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
             });
             return { ...prev, domains: newDomains };
         });
+    };
+
+    const handleAddCheck = async (checkData) => {
+        try {
+            const numericDomainId = parseInt(addCheckModal.domainId.replace('d', ''));
+
+            const created = await createCheck(numericDomainId, {
+                title: checkData.title,
+                owner: checkData.owner,
+                status: 'Not Ready',
+                requiresApproval: checkData.requiresApproval
+            });
+
+            setProject(prev => {
+                const newDomains = prev.domains.map(d => {
+                    if (d.id === addCheckModal.domainId) {
+                        return {
+                            ...d,
+                            checks: [...d.checks, {
+                                id: `c${created.id}`,
+                                title: created.title,
+                                owner: created.owner,
+                                status: created.status
+                            }]
+                        };
+                    }
+                    return d;
+                });
+                return { ...prev, domains: newDomains };
+            });
+
+            setAddCheckModal({ open: false, domainId: null, domainTitle: '' });
+        } catch (error) {
+            console.error('Error adding check:', error);
+            alert('Failed to add check');
+        }
+    };
+
+    const handleDeleteCheck = async (domainId, checkId) => {
+        if (!confirm('Delete this check?')) return;
+
+        try {
+            await deleteCheck(checkId);
+
+            setProject(prev => {
+                const newDomains = prev.domains.map(d => {
+                    if (d.id === domainId) {
+                        return {
+                            ...d,
+                            checks: d.checks.filter(c => c.id !== checkId)
+                        };
+                    }
+                    return d;
+                });
+                return { ...prev, domains: newDomains };
+            });
+        } catch (error) {
+            console.error('Error deleting check:', error);
+            alert('Failed to delete check');
+        }
     };
 
     return (
@@ -193,110 +180,110 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
 
                                 {expandedDomains[domain.id] && (
                                     <div className="checks-container">
-                                        {domain.checks.map(check => (
-                                            <div className="checks-list">
-                                                {domain.checks.map(check => (
-                                                    <div key={check.id} className={`check-item glass-panel ${check.status === 'Not Ready' ? 'heavy-alert' : ''}`}>
-                                                        <div className="check-info">
-                                                            <span className="check-title">{check.title}</span>
-                                                            <span className="check-owner">{check.owner}</span>
-                                                            {check.status === 'Not Ready' && check.blockerReason && (
-                                                                <div className="check-reason">
-                                                                    ⚠ {check.blockerReason}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="check-actions">
-                                                            <button
-                                                                className={`status-btn ${getStatusClass(check.status)}`}
-                                                                onClick={() => cycleStatus(domain.id, check.id)}
-                                                            >
-                                                                {check.status}
-                                                            </button>
-                                                            <button
-                                                                className="icon-btn"
-                                                                onClick={() => openEvidenceModal(check)}
-                                                                title="Link Evidence"
-                                                            >
-                                                                🔗
-                                                            </button>
-                                                            <button
-                                                                className="icon-btn delete-btn"
-                                                                onClick={() => handleDeleteCheck(domain.id, check.id)}
-                                                                title="Delete Check"
-                                                            >
-                                                                ✕
-                                                            </button>
-                                                        </div>
+                                        <div className="checks-list">
+                                            {domain.checks.map(check => (
+                                                <div key={check.id} className={`check-item glass-panel ${check.status === 'Not Ready' ? 'heavy-alert' : ''}`}>
+                                                    <div className="check-info">
+                                                        <span className="check-title">{check.title}</span>
+                                                        <span className="check-owner">{check.owner}</span>
+                                                        {check.status === 'Not Ready' && check.blockerReason && (
+                                                            <div className="check-reason">
+                                                                ⚠ {check.blockerReason}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                ))}
-                                                <button
-                                                    className="add-check-btn"
-                                                    onClick={() => setAddCheckModal({
-                                                        open: true,
-                                                        domainId: domain.id,
-                                                        domainTitle: domain.title
-                                                    })}
-                                                >
-                                                    + Add Check
-                                                </button>
-                                            </div>
-                                        )}
+                                                    <div className="check-actions">
+                                                        <button
+                                                            className={`status-btn ${getStatusClass(check.status)}`}
+                                                            onClick={() => cycleStatus(domain.id, check.id)}
+                                                        >
+                                                            {check.status}
+                                                        </button>
+                                                        <button
+                                                            className="icon-btn"
+                                                            title="Link Evidence"
+                                                            onClick={() => openEvidenceModal(check)}
+                                                        >
+                                                            🔗
+                                                        </button>
+                                                        <button
+                                                            className="icon-btn delete-btn"
+                                                            onClick={() => handleDeleteCheck(domain.id, check.id)}
+                                                            title="Delete Check"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <button
+                                                className="add-check-btn"
+                                                onClick={() => setAddCheckModal({
+                                                    open: true,
+                                                    domainId: domain.id,
+                                                    domainTitle: domain.title
+                                                })}
+                                            >
+                                                + Add Check
+                                            </button>
+                                        </div>
                                     </div>
-                                );
-                    })}
-                                {(!project.domains || project.domains.length === 0) && (
-                                    <div className="empty-state">No readiness domains configured.</div>
                                 )}
                             </div>
+                        );
+                    })}
+                    {(!project.domains || project.domains.length === 0) && (
+                        <div className="empty-state">No readiness domains configured.</div>
+                    )}
+                </div>
             </div>
 
-                <Modal
-                    isOpen={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    title="Attach Evidence"
-                >
-                    <div className="evidence-form">
-                        <p style={{ marginBottom: '16px', fontSize: '14px', color: 'var(--text-muted)' }}>
-                            Provide a link to the supporting document (SharePoint, Confluence, etc.) for:
-                            <br /><strong>{selectedCheck?.title}</strong>
-                        </p>
+            <Modal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title="Attach Evidence"
+            >
+                <div className="evidence-form">
+                    <p style={{ marginBottom: '16px', fontSize: '14px', color: 'var(--text-muted)' }}>
+                        Provide a link to the supporting document (SharePoint, Confluence, etc.) for:
+                        <br /><strong>{selectedCheck?.title}</strong>
+                    </p>
 
-                        <div className="form-group">
-                            <label>Evidence URL</label>
-                            <input
-                                type="text"
-                                className="form-input"
-                                placeholder="https://"
-                                value={evidenceUrl}
-                                onChange={(e) => setEvidenceUrl(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="modal-actions">
-                            <button className="btn-secondary" onClick={() => setModalOpen(false)}>Cancel</button>
-                            <button className="btn-primary" onClick={saveEvidence}>Save Link</button>
-                        </div>
+                    <div className="form-group">
+                        <label>Evidence URL</label>
+                        <input
+                            type="text"
+                            className="form-input"
+                            placeholder="https://"
+                            value={evidenceUrl}
+                            onChange={(e) => setEvidenceUrl(e.target.value)}
+                        />
                     </div>
-                </Modal>
 
-                <SignOffModal
-                    isOpen={showSignOff}
-                    onClose={() => setShowSignOff(false)}
-                    project={project}
-                    onConfirm={(details) => {
-                        console.log("Decision Recorded:", details);
-                        alert(`Decision Recorded: ${details.decision}`);
-                        // In real app, update status in backend
-                    }}
-                />
+                    <div className="modal-actions">
+                        <button className="btn-secondary" onClick={() => setModalOpen(false)}>Cancel</button>
+                        <button className="btn-primary" onClick={saveEvidence}>Save Link</button>
+                    </div>
+                </div>
+            </Modal>
 
-                <AddCheckModal
-                    isOpen={addCheckModal.open}
-                    onClose={() => setAddCheckModal({ open: false, domainId: null, domainTitle: '' })}
-                    onAdd={handleAddCheck}
-                    domainTitle={addCheckModal.domainTitle}
-                />
+            <SignOffModal
+                isOpen={showSignOff}
+                onClose={() => setShowSignOff(false)}
+                project={project}
+                onConfirm={(details) => {
+                    console.log("Decision Recorded:", details);
+                    alert(`Decision Recorded: ${details.decision}`);
+                    // In real app, update status in backend
+                }}
+            />
+
+            <AddCheckModal
+                isOpen={addCheckModal.open}
+                onClose={() => setAddCheckModal({ open: false, domainId: null, domainTitle: '' })}
+                onAdd={handleAddCheck}
+                domainTitle={addCheckModal.domainTitle}
+            />
         </Layout>
     );
 };
