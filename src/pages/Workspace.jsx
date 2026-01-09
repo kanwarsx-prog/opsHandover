@@ -237,118 +237,118 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
             )}
 
             {!loading && !error && project && (
-            <div className="workspace-container">
-                {/* Score Header */}
-                <div className="score-overview glass-panel">
-                    <div className="score-circle">
-                        <span className="score-value">{project.score}</span>
-                        <span className="score-label">Operational<br />Readiness</span>
+                <div className="workspace-container">
+                    {/* Score Header */}
+                    <div className="score-overview glass-panel">
+                        <div className="score-circle">
+                            <span className="score-value">{project.score}</span>
+                            <span className="score-label">Operational<br />Readiness</span>
+                        </div>
+                        <div className="project-meta">
+                            <div className="meta-row"><strong>Lead:</strong> {project.lead}</div>
+                            <div className="meta-row"><strong>Owner:</strong> {project.owner}</div>
+                            <div className="meta-row"><strong>Go-Live:</strong> {project.targetDate}</div>
+                        </div>
                     </div>
-                    <div className="project-meta">
-                        <div className="meta-row"><strong>Lead:</strong> {project.lead}</div>
-                        <div className="meta-row"><strong>Owner:</strong> {project.owner}</div>
-                        <div className="meta-row"><strong>Go-Live:</strong> {project.targetDate}</div>
-                    </div>
-                </div>
 
-                {/* Domains List */}
-                <div className="domains-list">
-                    {project.domains && project.domains.map(domain => {
-                        // Calculate Domain Signals
-                        const blockers = domain.checks.filter(c => c.status === 'Not Ready').length;
-                        const risks = domain.checks.filter(c => c.status === 'At Risk').length;
+                    {/* Domains List */}
+                    <div className="domains-list">
+                        {project.domains && project.domains.map(domain => {
+                            // Calculate Domain Signals
+                            const blockers = domain.checks.filter(c => c.status === 'Not Ready').length;
+                            const risks = domain.checks.filter(c => c.status === 'At Risk').length;
 
-                        return (
-                            <div key={domain.id} className="domain-section ">
-                                <div
-                                    className="domain-header glass-panel"
-                                    onClick={() => toggleDomain(domain.id)}
-                                >
-                                    <div className="domain-title-area">
-                                        <h3>{domain.title}</h3>
-                                        <div className="domain-signals">
-                                            {blockers > 0 && <span className="signal-badge danger">● {blockers} blocker{blockers !== 1 && 's'}</span>}
-                                            {risks > 0 && <span className="signal-badge warning">● {risks} at risk</span>}
+                            return (
+                                <div key={domain.id} className="domain-section ">
+                                    <div
+                                        className="domain-header glass-panel"
+                                        onClick={() => toggleDomain(domain.id)}
+                                    >
+                                        <div className="domain-title-area">
+                                            <h3>{domain.title}</h3>
+                                            <div className="domain-signals">
+                                                {blockers > 0 && <span className="signal-badge danger">● {blockers} blocker{blockers !== 1 && 's'}</span>}
+                                                {risks > 0 && <span className="signal-badge warning">● {risks} at risk</span>}
+                                            </div>
                                         </div>
+                                        <span className={`chevron ${expandedDomains[domain.id] ? 'expanded' : ''}`}>▼</span>
                                     </div>
-                                    <span className={`chevron ${expandedDomains[domain.id] ? 'expanded' : ''}`}>▼</span>
-                                </div>
 
-                                {expandedDomains[domain.id] && (
-                                    <div className="checks-container">
-                                        <div className="checks-list">
-                                            {domain.checks.map(check => (
-                                                <div key={check.id} className={`check-item glass-panel ${check.status === 'Not Ready' ? 'heavy-alert' : ''}`}>
-                                                    <div className="check-info">
-                                                        <div className="check-title-row">
-                                                            <span className="check-title">{check.title}</span>
-                                                            <div className="check-badges">
-                                                                {check.requiresApproval && (
-                                                                    <ApprovalBadge
-                                                                        approvalStatus={check.approvalStatus}
-                                                                        requiresApproval={check.requiresApproval}
-                                                                    />
-                                                                )}
-                                                                {check.evidence && check.evidence.length > 0 && (
-                                                                    <span className="evidence-count">
-                                                                        📎 {check.evidence.length}
-                                                                    </span>
-                                                                )}
+                                    {expandedDomains[domain.id] && (
+                                        <div className="checks-container">
+                                            <div className="checks-list">
+                                                {domain.checks.map(check => (
+                                                    <div key={check.id} className={`check-item glass-panel ${check.status === 'Not Ready' ? 'heavy-alert' : ''}`}>
+                                                        <div className="check-info">
+                                                            <div className="check-title-row">
+                                                                <span className="check-title">{check.title}</span>
+                                                                <div className="check-badges">
+                                                                    {check.requiresApproval && (
+                                                                        <ApprovalBadge
+                                                                            approvalStatus={check.approvalStatus}
+                                                                            requiresApproval={check.requiresApproval}
+                                                                        />
+                                                                    )}
+                                                                    {check.evidence && check.evidence.length > 0 && (
+                                                                        <span className="evidence-count">
+                                                                            📎 {check.evidence.length}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             </div>
+                                                            <span className="check-owner">{check.owner}</span>
+                                                            {check.status === 'Not Ready' && check.blockerReason && (
+                                                                <div className="check-reason">
+                                                                    ⚠ {check.blockerReason}
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <span className="check-owner">{check.owner}</span>
-                                                        {check.status === 'Not Ready' && check.blockerReason && (
-                                                            <div className="check-reason">
-                                                                ⚠ {check.blockerReason}
-                                                            </div>
-                                                        )}
+                                                        <div className="check-actions">
+                                                            <button
+                                                                className={`status-btn ${getStatusClass(check.status)}`}
+                                                                onClick={() => cycleStatus(domain.id, check.id)}
+                                                            >
+                                                                {check.status}
+                                                            </button>
+                                                            <button
+                                                                className="icon-btn"
+                                                                title="Link Evidence"
+                                                                onClick={() => openEvidenceModal(check)}
+                                                            >
+                                                                🔗
+                                                            </button>
+                                                            <button
+                                                                className="icon-btn delete-btn"
+                                                                onClick={() => handleDeleteCheck(domain.id, check.id)}
+                                                                title="Delete Check"
+                                                            >
+                                                                ✕
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="check-actions">
-                                                        <button
-                                                            className={`status-btn ${getStatusClass(check.status)}`}
-                                                            onClick={() => cycleStatus(domain.id, check.id)}
-                                                        >
-                                                            {check.status}
-                                                        </button>
-                                                        <button
-                                                            className="icon-btn"
-                                                            title="Link Evidence"
-                                                            onClick={() => openEvidenceModal(check)}
-                                                        >
-                                                            🔗
-                                                        </button>
-                                                        <button
-                                                            className="icon-btn delete-btn"
-                                                            onClick={() => handleDeleteCheck(domain.id, check.id)}
-                                                            title="Delete Check"
-                                                        >
-                                                            ✕
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            <button
-                                                className="add-check-btn"
-                                                onClick={() => setAddCheckModal({
-                                                    open: true,
-                                                    domainId: domain.id,
-                                                    domainTitle: domain.title
-                                                })}
-                                            >
-                                                + Add Check
-                                            </button>
+                                                ))}
+                                                <button
+                                                    className="add-check-btn"
+                                                    onClick={() => setAddCheckModal({
+                                                        open: true,
+                                                        domainId: domain.id,
+                                                        domainTitle: domain.title
+                                                    })}
+                                                >
+                                                    + Add Check
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                    {(!project.domains || project.domains.length === 0) && (
-                        <div className="empty-state">No readiness domains configured.</div>
-                    )}
+                                    )}
+                                </div>
+                            );
+                        })}
+                        {(!project.domains || project.domains.length === 0) && (
+                            <div className="empty-state">No readiness domains configured.</div>
+                        )}
+                    </div>
                 </div>
-            </div>
-
+            )}
 
             <Modal
                 isOpen={modalOpen}
