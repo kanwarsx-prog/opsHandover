@@ -1,7 +1,7 @@
 :root {
   /* Brand Identity: Premium Deep Tech */
-  --color-bg-base: #1a1b2e;
-  --color-bg-gradient: linear-gradient(135deg, #1e1c3f 0%, #3a3573 50%, #2e2d4e 100%);
+  --color-bg-base: #0a0b1e;
+  --color-bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
 
   /* Glassmorphism Tokens */
   --glass-bg: rgba(255, 255, 255, 0.03);
