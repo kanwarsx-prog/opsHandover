@@ -206,16 +206,37 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
 
     return (
         <Layout
-            title={project.name}
+            title={project?.name || 'Loading...'}
             currentView="dashboard"
             onNavigate={onNavigate}
             actions={
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="btn-secondary" onClick={onBack}>Exit Workspace</button>
-                    <button className="btn-primary" onClick={() => setShowSignOff(true)}>Proceed to Go-Live Decision</button>
-                </div>
+                <>
+                    <button className="btn-secondary" onClick={onBack}>← Back to Dashboard</button>
+                    {project && (
+                        <button className="btn-primary" onClick={() => setShowSignOff(true)}>
+                            Proceed to Go-Live Decision
+                        </button>
+                    )}
+                </>
             }
         >
+            {loading && (
+                <div className="workspace-container">
+                    <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                        Loading workspace...
+                    </div>
+                </div>
+            )}
+
+            {error && (
+                <div className="workspace-container">
+                    <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-danger)' }}>
+                        {error}
+                    </div>
+                </div>
+            )}
+
+            {!loading && !error && project && (
             <div className="workspace-container">
                 {/* Score Header */}
                 <div className="score-overview glass-panel">
