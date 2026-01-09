@@ -57,34 +57,34 @@
    THEME SYSTEM - Light Mode
    ============================================================================ */
 [data-theme="light"] {
-  /* Background */
-  --color-bg-base: #f5f7fa;
-  --color-bg-gradient: linear-gradient(135deg, #ffffff 0%, #e8ecf1 50%, #f5f7fa 100%);
+  /* Background - Soft lavender/purple tones */
+  --color-bg-base: #e8e4f3;
+  --color-bg-gradient: linear-gradient(135deg, #f0ecf9 0%, #d8d0eb 50%, #e8e4f3 100%);
 
   /* Glassmorphism - Adapted for light */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-hover: rgba(255, 255, 255, 0.9);
-  --glass-border: 1px solid rgba(0, 0, 0, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.8);
+  --glass-border: 1px solid rgba(100, 80, 150, 0.15);
+  --glass-shadow: 0 8px 32px 0 rgba(100, 80, 150, 0.12);
   --glass-blur: blur(12px);
 
-  /* Accents - Adjusted for light background */
-  --color-primary: #0099ff;
-  /* Bright Blue */
-  --color-primary-glow: rgba(0, 153, 255, 0.3);
-  --color-secondary: #e91e63;
+  /* Accents - Vibrant but readable on light purple */
+  --color-primary: #5b21b6;
+  /* Deep Purple */
+  --color-primary-glow: rgba(91, 33, 182, 0.3);
+  --color-secondary: #db2777;
   /* Pink */
-  --color-success: #00c853;
+  --color-success: #059669;
   /* Green */
-  --color-warning: #ff9800;
-  /* Orange */
-  --color-danger: #f44336;
+  --color-warning: #d97706;
+  /* Amber */
+  --color-danger: #dc2626;
   /* Red */
 
   /* Typography */
-  --text-main: #1a1a1a;
-  --text-muted: rgba(0, 0, 0, 0.7);
-  --text-dim: rgba(0, 0, 0, 0.5);
+  --text-main: #1f1f1f;
+  --text-muted: rgba(0, 0, 0, 0.75);
+  --text-dim: rgba(0, 0, 0, 0.55);
 }
 
 /* ============================================================================
