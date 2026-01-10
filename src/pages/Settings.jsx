@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import '../styles/settings.css';
 
 const Settings = ({ onNavigate }) => {
+    const { user } = useAuth();
     const [notifications, setNotifications] = useState({
         email: true,
         slack: true,
@@ -23,6 +25,19 @@ const Settings = ({ onNavigate }) => {
         setIntegrations(prev => ({ ...prev, [key]: !prev[key] }));
     };
 
+    // Get user initials for avatar
+    const getUserInitials = () => {
+        if (user?.user_metadata?.full_name) {
+            const names = user.user_metadata.full_name.split(' ');
+            return names.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+        return user?.email?.slice(0, 2).toUpperCase() || 'U';
+    };
+
+    const getUserName = () => {
+        return user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+    };
+
     return (
         <Layout
             title="Settings"
@@ -36,14 +51,14 @@ const Settings = ({ onNavigate }) => {
                     <h3>User Profile</h3>
                     <div className="profile-card">
                         <div className="profile-header">
-                            <div className="loading-avatar">AM</div>
+                            <div className="loading-avatar">{getUserInitials()}</div>
                             <div className="profile-details">
-                                <span className="profile-name">Alex Morgan</span>
-                                <span className="profile-role">Global Administrator</span>
-                                <span className="profile-email">alex.morgan@everydaysystems.com</span>
+                                <span className="profile-name">{getUserName()}</span>
+                                <span className="profile-role">User</span>
+                                <span className="profile-email">{user?.email}</span>
                             </div>
                         </div>
-                        <button className="btn-secondary">Edit Profile</button>
+                        <button className="btn-secondary" disabled>Edit Profile</button>
                     </div>
                 </section>
 
@@ -146,7 +161,7 @@ const Settings = ({ onNavigate }) => {
                         <tbody>
                             <tr>
                                 <td>Logged in</td>
-                                <td>Alex Morgan</td>
+                                <td>{getUserName()}</td>
                                 <td>Just now</td>
                             </tr>
                             <tr>
