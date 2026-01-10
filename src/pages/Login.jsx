@@ -2,25 +2,23 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/auth.css';
 
-const Login = ({ onNavigate }) => {
+const Login = () => {
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
     const [error, setError] = useState('');
-    const { signInWithEmail } = useAuth();
+    const { signIn } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-        setMessage('');
 
         try {
-            await signInWithEmail(email);
-            setMessage('Check your email for the magic link!');
-            setEmail('');
+            await signIn(email, name);
+            // User will be automatically redirected by App.jsx
         } catch (err) {
-            setError(err.message || 'Failed to send magic link');
+            setError(err.message || 'Failed to sign in');
         } finally {
             setLoading(false);
         }
@@ -34,11 +32,24 @@ const Login = ({ onNavigate }) => {
                         <img src="/logo.png" alt="OpsHandover" className="logo-image" />
                         <span className="logo-text">OpsHandover</span>
                     </div>
-                    <h2>Welcome Back</h2>
-                    <p>Enter your email to receive a sign-in link</p>
+                    <h2>Welcome to OpsHandover</h2>
+                    <p>Enter your details to get started</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">
+                    <div className="form-group">
+                        <label htmlFor="name">Full Name</label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Alex Morgan"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>
                         <input
@@ -58,37 +69,18 @@ const Login = ({ onNavigate }) => {
                         </div>
                     )}
 
-                    {message && (
-                        <div className="alert alert-success">
-                            ✅ {message}
-                        </div>
-                    )}
-
                     <button
                         type="submit"
                         className="btn-primary btn-block"
                         disabled={loading}
                     >
-                        {loading ? 'Sending...' : 'Send Magic Link'}
+                        {loading ? 'Signing in...' : 'Get Started'}
                     </button>
                 </form>
-
-                <div className="auth-footer">
-                    <p>
-                        Don't have an account?{' '}
-                        <button
-                            className="link-button"
-                            onClick={() => onNavigate('signup')}
-                        >
-                            Sign up
-                        </button>
-                    </p>
-                </div>
             </div>
 
             <div className="auth-info">
-                <p>🔐 Passwordless authentication</p>
-                <p>We'll send you a secure link to sign in</p>
+                <p>🚀 Start managing your operations handovers</p>
             </div>
         </div>
     );

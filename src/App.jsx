@@ -8,7 +8,6 @@ import Analytics from './pages/Analytics'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateEditor from './components/TemplateEditor'
 import Login from './pages/Login'
-import SignUp from './pages/SignUp'
 import ProtectedRoute from './components/ProtectedRoute'
 
 // Main App Component (wrapped with auth)
@@ -61,11 +60,7 @@ function AppContent() {
   if (!loading && !user) {
     return (
       <div className="app-container">
-        {currentView === 'signup' ? (
-          <SignUp onNavigate={handleNavigate} />
-        ) : (
-          <Login onNavigate={handleNavigate} />
-        )}
+        <Login />
       </div>
     );
   }

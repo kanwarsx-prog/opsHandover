@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext({});
 
@@ -16,71 +15,40 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check active session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
-
-        // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
-
-        return () => subscription.unsubscribe();
+        // Check if user exists in localStorage
+        const storedUser = localStorage.getItem('opshandover_user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+        setLoading(false);
     }, []);
 
-    // Sign in with magic link (passwordless)
-    const signInWithEmail = async (email) => {
-        const { error } = await supabase.auth.signInWithOtp({
+    // Simple sign in - just store user info
+    const signIn = async (email, name) => {
+        const userData = {
             email,
-            options: {
-                emailRedirectTo: window.location.origin
-            }
-        });
+            user_metadata: {
+                full_name: name
+            },
+            id: `user_${Date.now()}` // Simple ID for now
+        };
 
-        if (error) throw error;
-        return { success: true };
-    };
-
-    // Sign up with magic link
-    const signUp = async (email, metadata = {}) => {
-        const { error } = await supabase.auth.signInWithOtp({
-            email,
-            options: {
-                emailRedirectTo: window.location.origin,
-                data: metadata // Store user metadata like name
-            }
-        });
-
-        if (error) throw error;
+        localStorage.setItem('opshandover_user', JSON.stringify(userData));
+        setUser(userData);
         return { success: true };
     };
 
     // Sign out
     const signOut = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-    };
-
-    // Request password reset (for future when passwords are added)
-    const resetPassword = async (email) => {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password`
-        });
-
-        if (error) throw error;
-        return { success: true };
+        localStorage.removeItem('opshandover_user');
+        setUser(null);
     };
 
     const value = {
         user,
         loading,
-        signInWithEmail,
-        signUp,
-        signOut,
-        resetPassword
+        signIn,
+        signOut
     };
 
     return (
