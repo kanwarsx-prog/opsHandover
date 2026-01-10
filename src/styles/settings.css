@@ -15,10 +15,10 @@
     font-size: 16px;
     font-weight: 600;
     margin-bottom: var(--spacing-lg);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-sm);
 }
 
@@ -57,7 +57,7 @@
 .profile-name {
     font-size: 18px;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .profile-role {
@@ -81,9 +81,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.02);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.integration-item:hover {
+    background: var(--bg-hover);
+    border-color: var(--color-primary);
 }
 
 .int-icon {
@@ -122,8 +129,8 @@
 }
 
 .int-desc {
-    font-size: 11px;
-    color: var(--text-muted);
+    font-size: 12px;
+    color: var(--text-secondary);
 }
 
 /* Toggle Switch */
@@ -147,7 +154,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
     transition: .4s;
     border-radius: 24px;
 }
@@ -155,21 +163,23 @@
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--text-secondary);
     transition: .4s;
     border-radius: 50%;
 }
 
 input:checked+.slider {
     background-color: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
 input:checked+.slider:before {
     transform: translateX(24px);
+    background-color: #fff;
 }
 
 /* Notifications */
@@ -203,15 +213,15 @@ input:checked+.slider:before {
 
 .audit-table th {
     text-align: left;
-    color: var(--text-dim);
+    color: var(--text-secondary);
     font-weight: 500;
     padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .audit-table td {
     padding: var(--spacing-sm) 0;
-    color: var(--text-muted);
+    color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
