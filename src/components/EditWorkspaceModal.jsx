@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import '../styles/editWorkspaceModal.css';
 
 const EditWorkspaceModal = ({ isOpen, onClose, workspace, onSave }) => {
     const [formData, setFormData] = useState({
-        name: workspace?.name || '',
-        lead: workspace?.lead || '',
-        owner: workspace?.owner || '',
-        targetDate: workspace?.targetDate || '',
-        description: workspace?.description || ''
+        name: '',
+        lead: '',
+        owner: '',
+        targetDate: '',
+        description: ''
     });
 
     const [errors, setErrors] = useState({});
+
+    // Update form data when workspace prop changes
+    useEffect(() => {
+        if (workspace) {
+            setFormData({
+                name: workspace.name || '',
+                lead: workspace.lead || '',
+                owner: workspace.owner || '',
+                targetDate: workspace.targetDate || '',
+                description: workspace.description || ''
+            });
+        }
+    }, [workspace]);
 
     const validate = () => {
         const newErrors = {};
@@ -33,13 +46,6 @@ const EditWorkspaceModal = ({ isOpen, onClose, workspace, onSave }) => {
     };
 
     const handleClose = () => {
-        setFormData({
-            name: workspace?.name || '',
-            lead: workspace?.lead || '',
-            owner: workspace?.owner || '',
-            targetDate: workspace?.targetDate || '',
-            description: workspace?.description || ''
-        });
         setErrors({});
         onClose();
     };

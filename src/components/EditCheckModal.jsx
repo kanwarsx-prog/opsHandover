@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import '../styles/editCheckModal.css';
 
 const EditCheckModal = ({ isOpen, onClose, check, onSave }) => {
     const [formData, setFormData] = useState({
-        title: check?.title || '',
-        owner: check?.owner || '',
-        status: check?.status || 'Not Ready',
-        blockerReason: check?.blockerReason || '',
-        requiresApproval: check?.requiresApproval || false
+        title: '',
+        owner: '',
+        status: 'Not Ready',
+        blockerReason: '',
+        requiresApproval: false
     });
 
     const [errors, setErrors] = useState({});
+
+    // Update form data when check prop changes
+    useEffect(() => {
+        if (check) {
+            setFormData({
+                title: check.title || '',
+                owner: check.owner || '',
+                status: check.status || 'Not Ready',
+                blockerReason: check.blockerReason || '',
+                requiresApproval: check.requiresApproval || false
+            });
+        }
+    }, [check]);
 
     const validate = () => {
         const newErrors = {};
@@ -34,13 +47,6 @@ const EditCheckModal = ({ isOpen, onClose, check, onSave }) => {
     };
 
     const handleClose = () => {
-        setFormData({
-            title: check?.title || '',
-            owner: check?.owner || '',
-            status: check?.status || 'Not Ready',
-            blockerReason: check?.blockerReason || '',
-            requiresApproval: check?.requiresApproval || false
-        });
         setErrors({});
         onClose();
     };
