@@ -171,18 +171,18 @@
 /* Button styling for auth pages */
 .auth-form .btn-primary {
     background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: #000;
+    color: #fff;
     font-weight: 600;
     padding: 12px 24px;
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
+    border: none;
 }
 
 .auth-form .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #7c7ff5, #b794f6);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    color: #000;
-    /* Ensure text stays dark on hover */
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
 .auth-form .btn-primary:disabled {
