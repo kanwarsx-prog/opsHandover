@@ -2,24 +2,32 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
 }
 
 .modal-header {
+    display: flex;
+    flex-direction: column;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 .modal-header h3 {
     font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
-    margin: 0 0 var(--spacing-xs) 0;
+    margin: 0 0 var(--spacing-sm) 0;
+    line-height: 1.3;
 }
 
 .modal-header p {
     font-size: 14px;
     color: var(--text-secondary);
     margin: 0;
+    line-height: 1.5;
 }
 
 .add-check-form {
@@ -67,7 +75,7 @@
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 12px;
     cursor: pointer;
     margin-bottom: 4px;
 }
