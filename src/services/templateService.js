@@ -396,3 +396,109 @@ export async function getTemplateStats(templateId) {
         throw error;
     }
 }
+
+// ============================================================================
+// LIBRARY OPERATIONS (for reusing domains/checks)
+// ============================================================================
+
+/**
+ * Fetch all domains across all templates for library selection
+ * @returns {Promise<Array>} Array of domains with metadata
+ */
+export async function fetchDomainLibrary() {
+    try {
+        // Fetch all domains with their template info and checks
+        const { data: domains, error } = await supabase
+            .from('template_domains')
+            .select(`
+                *,
+                template:template_libraries(id, name, category),
+                checks:template_checks(id)
+            `)
+            .order('title', { ascending: true });
+
+        if (error) throw error;
+
+        // Transform data to include check count and source template
+        const libraryDomains = domains.map(domain => ({
+            id: domain.id,
+            title: domain.title,
+            description: domain.description,
+            checkCount: domain.checks?.length || 0,
+            sourceTemplate: domain.template?.name || 'Unknown',
+            sourceTemplateId: domain.template?.id,
+            templateCategory: domain.template?.category || 'user',
+            orderIndex: domain.order_index
+        }));
+
+        return libraryDomains;
+    } catch (error) {
+        console.error('Error fetching domain library:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch all checks for a specific domain (for preview)
+ * @param {number} domainId - Domain ID
+ * @returns {Promise<Array>} Array of checks
+ */
+export async function fetchChecksForDomain(domainId) {
+    try {
+        const { data: checks, error } = await supabase
+            .from('template_checks')
+            .select('*')
+            .eq('domain_id', domainId)
+            .order('order_index', { ascending: true });
+
+        if (error) throw error;
+
+        return checks || [];
+    } catch (error) {
+        console.error('Error fetching checks for domain:', error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch all checks across all templates for library selection
+ * @returns {Promise<Array>} Array of checks with metadata
+ */
+export async function fetchCheckLibrary() {
+    try {
+        // Fetch all checks with their domain and template info
+        const { data: checks, error } = await supabase
+            .from('template_checks')
+            .select(`
+                *,
+                domain:template_domains(
+                    id,
+                    title,
+                    template:template_libraries(id, name, category)
+                )
+            `)
+            .order('title', { ascending: true });
+
+        if (error) throw error;
+
+        // Transform data to include source info
+        const libraryChecks = checks.map(check => ({
+            id: check.id,
+            title: check.title,
+            ownerPlaceholder: check.owner_placeholder,
+            requiresApproval: check.requires_approval,
+            sourceDomain: check.domain?.title || 'Unknown',
+            sourceDomainId: check.domain?.id,
+            sourceTemplate: check.domain?.template?.name || 'Unknown',
+            sourceTemplateId: check.domain?.template?.id,
+            templateCategory: check.domain?.template?.category || 'user',
+            orderIndex: check.order_index
+        }));
+
+        return libraryChecks;
+    } catch (error) {
+        console.error('Error fetching check library:', error);
+        throw error;
+    }
+}
+

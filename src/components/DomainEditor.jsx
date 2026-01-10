@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import CheckEditor from './CheckEditor';
+import CheckLibraryModal from './CheckLibraryModal';
 import '../styles/domainEditor.css';
 
-const DomainEditor = ({ domain, onUpdate, onDelete, index }) => {
+const DomainEditor = ({ domain, index, onUpdate, onDelete }) => {
     const [isExpanded, setIsExpanded] = useState(true);
+    const [showCheckLibrary, setShowCheckLibrary] = useState(false);
     const [checks, setChecks] = useState(domain.checks || []);
 
     const handleDomainChange = (field, value) => {
@@ -30,6 +32,12 @@ const DomainEditor = ({ domain, onUpdate, onDelete, index }) => {
             requiresApproval: false
         };
         const newChecks = [...checks, newCheck];
+        setChecks(newChecks);
+        onUpdate(index, { ...domain, checks: newChecks });
+    };
+
+    const handleAddChecksFromLibrary = (selectedChecks) => {
+        const newChecks = [...checks, ...selectedChecks];
         setChecks(newChecks);
         onUpdate(index, { ...domain, checks: newChecks });
     };
@@ -85,19 +93,28 @@ const DomainEditor = ({ domain, onUpdate, onDelete, index }) => {
                     <div className="checks-section">
                         <div className="checks-header">
                             <h4>Checks</h4>
-                            <button
-                                type="button"
-                                className="btn-secondary btn-sm"
-                                onClick={handleAddCheck}
-                            >
-                                + Add Check
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                <button
+                                    type="button"
+                                    className="btn-secondary btn-sm"
+                                    onClick={() => setShowCheckLibrary(true)}
+                                >
+                                    📚 Add from Library
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn-secondary btn-sm"
+                                    onClick={handleAddCheck}
+                                >
+                                    + Add Check
+                                </button>
+                            </div>
                         </div>
 
                         <div className="checks-list">
                             {checks.length === 0 ? (
                                 <div className="empty-state">
-                                    <p>No checks yet. Click "+ Add Check" to get started.</p>
+                                    <p>No checks yet. Click "+ Add Check" to create one or "Add from Library" to reuse an existing check.</p>
                                 </div>
                             ) : (
                                 checks.map((check, checkIndex) => (
@@ -114,6 +131,13 @@ const DomainEditor = ({ domain, onUpdate, onDelete, index }) => {
                     </div>
                 </div>
             )}
+
+            {/* Check Library Modal */}
+            <CheckLibraryModal
+                isOpen={showCheckLibrary}
+                onClose={() => setShowCheckLibrary(false)}
+                onSelectChecks={handleAddChecksFromLibrary}
+            />
         </div>
     );
 };

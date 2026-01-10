@@ -155,7 +155,17 @@ const NewHandover = ({ onBack, onNavigate }) => {
 
                     {/* Template Selection Section - No longer conditional on 'step' */}
                     <div className="step-content">
-                        <h3>Select a Template</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                            <h3 style={{ margin: 0 }}>Select a Template</h3>
+                            <button
+                                type="button"
+                                className="btn-secondary btn-sm"
+                                onClick={() => onNavigate('template-library')}
+                                style={{ fontSize: '13px' }}
+                            >
+                                📚 Browse Template Library
+                            </button>
+                        </div>
                         <p className="step-description">
                             Choose a readiness template that best matches your project type.
                         </p>

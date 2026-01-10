@@ -4,11 +4,14 @@ import Workspace from './pages/Workspace'
 import Settings from './pages/Settings'
 import NewHandover from './pages/NewHandover'
 import Analytics from './pages/Analytics'
+import TemplateLibrary from './pages/TemplateLibrary'
+import TemplateEditor from './components/TemplateEditor'
 
 // Simple router for prototype
 function App() {
   const [currentView, setCurrentView] = useState('dashboard');
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(null);
+  const [templateEditorId, setTemplateEditorId] = useState(null);
 
   const navigateToWorkspace = (workspaceId) => {
     setActiveWorkspaceId(workspaceId);
@@ -20,7 +23,7 @@ function App() {
     setActiveWorkspaceId(null);
   };
 
-  const handleNavigate = (view) => {
+  const handleNavigate = (view, params = {}) => {
     if (view === 'settings') {
       setCurrentView('settings');
       setActiveWorkspaceId(null);
@@ -29,6 +32,13 @@ function App() {
       setActiveWorkspaceId(null);
     } else if (view === 'analytics') {
       setCurrentView('analytics');
+      setActiveWorkspaceId(null);
+    } else if (view === 'template-library') {
+      setCurrentView('template-library');
+      setActiveWorkspaceId(null);
+    } else if (view === 'template-editor') {
+      setCurrentView('template-editor');
+      setTemplateEditorId(params.templateId || null);
       setActiveWorkspaceId(null);
     } else if (view === 'dashboard') {
       navigateToDashboard();
@@ -59,6 +69,19 @@ function App() {
       )}
       {currentView === 'analytics' && (
         <Analytics onNavigate={handleNavigate} />
+      )}
+      {currentView === 'template-library' && (
+        <TemplateLibrary
+          onNavigate={handleNavigate}
+          onBack={navigateToDashboard}
+        />
+      )}
+      {currentView === 'template-editor' && (
+        <TemplateEditor
+          templateId={templateEditorId}
+          onNavigate={handleNavigate}
+          onBack={() => handleNavigate('template-library')}
+        />
       )}
     </div>
   )

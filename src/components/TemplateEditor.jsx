@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import DomainEditor from '../components/DomainEditor';
+import DomainLibraryModal from '../components/DomainLibraryModal';
 import { createTemplate, updateTemplate, fetchTemplateById } from '../services/templateService';
 import '../styles/templateEditor.css';
 
@@ -15,6 +16,7 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [showDomainLibrary, setShowDomainLibrary] = useState(false);
 
     useEffect(() => {
         if (templateId) {
@@ -123,6 +125,16 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                     description: '',
                     checks: []
                 }
+            ]
+        });
+    };
+
+    const handleAddDomainFromLibrary = (domain) => {
+        setTemplate({
+            ...template,
+            domains: [
+                ...template.domains,
+                domain
             ]
         });
     };
@@ -239,19 +251,28 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                 <div className="editor-section">
                     <div className="section-header">
                         <h3>Domains & Checks</h3>
-                        <button
-                            className="btn-primary btn-sm"
-                            onClick={handleAddDomain}
-                            disabled={saving}
-                        >
-                            + Add Domain
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                className="btn-secondary btn-sm"
+                                onClick={() => setShowDomainLibrary(true)}
+                                disabled={saving}
+                            >
+                                📚 Add from Library
+                            </button>
+                            <button
+                                className="btn-primary btn-sm"
+                                onClick={handleAddDomain}
+                                disabled={saving}
+                            >
+                                + Add Domain
+                            </button>
+                        </div>
                     </div>
 
                     <div className="domains-list">
                         {template.domains.length === 0 ? (
                             <div className="empty-domains glass-panel">
-                                <p>No domains yet. Click "+ Add Domain" to get started.</p>
+                                <p>No domains yet. Click "+ Add Domain" to create one or "Add from Library" to reuse an existing domain.</p>
                             </div>
                         ) : (
                             template.domains.map((domain, index) => (
@@ -267,6 +288,13 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Domain Library Modal */}
+            <DomainLibraryModal
+                isOpen={showDomainLibrary}
+                onClose={() => setShowDomainLibrary(false)}
+                onSelectDomain={handleAddDomainFromLibrary}
+            />
         </Layout>
     );
 };
