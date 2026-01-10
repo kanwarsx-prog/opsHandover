@@ -33,7 +33,7 @@ const SignUp = ({ onNavigate }) => {
             <div className="auth-card glass-panel">
                 <div className="auth-header">
                     <div className="app-logo">
-                        <div className="logo-icon-box">OH</div>
+                        <img src="/logo.png" alt="OpsHandover" className="logo-image" />
                         <span className="logo-text">OpsHandover</span>
                     </div>
                     <h2>Create Account</h2>
