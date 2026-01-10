@@ -1,0 +1,170 @@
+.drill-down-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    max-width: 900px;
+    width: 100%;
+}
+
+.drill-down-modal .modal-header {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-md);
+}
+
+.drill-down-modal .modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    line-height: 1.3;
+}
+
+.drill-down-modal .modal-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-muted);
+}
+
+.handovers-table-container {
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.handovers-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.handovers-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    z-index: 1;
+}
+
+.handovers-table th {
+    padding: var(--spacing-md);
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.handovers-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.handovers-table th.sortable:hover {
+    color: var(--color-primary);
+}
+
+.handovers-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.handover-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.handover-row:hover {
+    background: var(--bg-hover);
+}
+
+.handovers-table td {
+    padding: var(--spacing-md);
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.handover-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.handover-score .score-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.status-ready {
+    background: rgba(0, 250, 154, 0.15);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.status-badge.status-risk {
+    background: rgba(255, 215, 0, 0.15);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+}
+
+.status-badge.status-not-ready {
+    background: rgba(255, 68, 68, 0.15);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+}
+
+.handover-date,
+.handover-owner {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .drill-down-modal {
+        max-width: 100%;
+    }
+
+    .handovers-table-container {
+        max-height: 400px;
+    }
+
+    .handovers-table {
+        font-size: 12px;
+    }
+
+    .handovers-table th,
+    .handovers-table td {
+        padding: var(--spacing-sm);
+    }
+
+    .handover-owner {
+        display: none;
+    }
+}

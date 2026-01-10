@@ -6,7 +6,13 @@ import {
 import { saveAs } from 'file-saver';
 import '../styles/metricsDashboard.css';
 
-const MetricsDashboard = ({ handovers = [], dateRange = null }) => {
+const MetricsDashboard = ({
+    handovers = [],
+    dateRange = null,
+    onReadinessRangeClick,
+    onStatusClick,
+    onApprovalClick
+}) => {
     // Calculate metrics
     const metrics = React.useMemo(() => {
         const total = handovers.length;
@@ -133,9 +139,15 @@ const MetricsDashboard = ({ handovers = [], dateRange = null }) => {
                                 outerRadius={80}
                                 fill="#8884d8"
                                 dataKey="value"
+                                onClick={(data) => onStatusClick && onStatusClick(data.name)}
+                                cursor="pointer"
                             >
                                 {statusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.color}
+                                        style={{ cursor: 'pointer' }}
+                                    />
                                 ))}
                             </Pie>
                             <Tooltip />
@@ -162,7 +174,13 @@ const MetricsDashboard = ({ handovers = [], dateRange = null }) => {
                                     borderRadius: '8px'
                                 }}
                             />
-                            <Bar dataKey="count" fill="var(--primary)" radius={[8, 8, 0, 0]} />
+                            <Bar
+                                dataKey="count"
+                                fill="var(--primary)"
+                                radius={[8, 8, 0, 0]}
+                                onClick={(data) => onReadinessRangeClick && onReadinessRangeClick(data.min, data.max)}
+                                cursor="pointer"
+                            />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

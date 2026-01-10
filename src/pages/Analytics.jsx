@@ -3,7 +3,16 @@ import Layout from '../components/Layout';
 import MetricsDashboard from '../components/MetricsDashboard';
 import HandoverTrendChart from '../components/HandoverTrendChart';
 import DashboardFilters from '../components/DashboardFilters';
+import DrillDownModal from '../components/DrillDownModal';
 import { fetchHandovers } from '../services/handoverService';
+import {
+    filterByReadinessRange,
+    filterByStatus,
+    filterByApprovalStatus,
+    getReadinessRangeLabel,
+    getStatusLabel,
+    getApprovalStatusLabel
+} from '../utils/analyticsFilters';
 import '../styles/analytics.css';
 
 const Analytics = ({ onNavigate }) => {
@@ -19,6 +28,13 @@ const Analytics = ({ onNavigate }) => {
         dateTo: '',
         sortBy: 'dateCreated',
         sortOrder: 'desc'
+    });
+
+    // Drill-down state
+    const [drillDown, setDrillDown] = useState({
+        isOpen: false,
+        title: '',
+        handovers: []
     });
 
     useEffect(() => {
@@ -108,6 +124,42 @@ const Analytics = ({ onNavigate }) => {
         setFilteredHandovers(filtered);
     };
 
+    // Drill-down handlers
+    const handleReadinessRangeClick = (min, max) => {
+        const filtered = filterByReadinessRange(filteredHandovers, min, max);
+        setDrillDown({
+            isOpen: true,
+            title: `Projects with Readiness Score: ${getReadinessRangeLabel(min, max)}`,
+            handovers: filtered
+        });
+    };
+
+    const handleStatusClick = (status) => {
+        const filtered = filterByStatus(filteredHandovers, status);
+        setDrillDown({
+            isOpen: true,
+            title: `Projects with Status: ${getStatusLabel(status)}`,
+            handovers: filtered
+        });
+    };
+
+    const handleApprovalClick = (approvalStatus) => {
+        const filtered = filterByApprovalStatus(filteredHandovers, approvalStatus);
+        setDrillDown({
+            isOpen: true,
+            title: `Projects with ${getApprovalStatusLabel(approvalStatus)}`,
+            handovers: filtered
+        });
+    };
+
+    const closeDrillDown = () => {
+        setDrillDown({
+            isOpen: false,
+            title: '',
+            handovers: []
+        });
+    };
+
     if (loading) {
         return (
             <Layout title="Analytics" onNavigate={onNavigate} currentView="analytics">
@@ -165,10 +217,23 @@ const Analytics = ({ onNavigate }) => {
                     </div>
                 ) : (
                     <>
-                        <MetricsDashboard handovers={filteredHandovers} />
+                        <MetricsDashboard
+                            handovers={filteredHandovers}
+                            onReadinessRangeClick={handleReadinessRangeClick}
+                            onStatusClick={handleStatusClick}
+                            onApprovalClick={handleApprovalClick}
+                        />
                         <HandoverTrendChart handovers={filteredHandovers} />
                     </>
                 )}
+
+                <DrillDownModal
+                    isOpen={drillDown.isOpen}
+                    onClose={closeDrillDown}
+                    title={drillDown.title}
+                    handovers={drillDown.handovers}
+                    onNavigate={onNavigate}
+                />
             </div>
         </Layout>
     );
