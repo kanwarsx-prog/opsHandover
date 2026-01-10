@@ -3,11 +3,13 @@ import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import SignOffModal from '../components/SignOffModal';
 import AddCheckModal from '../components/AddCheckModal';
+import EditWorkspaceModal from '../components/EditWorkspaceModal';
+import EditCheckModal from '../components/EditCheckModal';
 import ApprovalPanel from '../components/ApprovalPanel';
 import EvidenceList from '../components/EvidenceList';
 import ApprovalBadge from '../components/ApprovalBadge';
-import { fetchHandoverById } from '../services/handoverService';
-import { createCheck, deleteCheck } from '../services/checkService';
+import { fetchHandoverById, updateHandover } from '../services/handoverService';
+import { createCheck, deleteCheck, updateCheck } from '../services/checkService';
 import '../styles/workspace.css';
 
 const Workspace = ({ workspaceId, onBack, onNavigate }) => {
@@ -23,6 +25,8 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
     const [selectedCheck, setSelectedCheck] = useState(null);
     const [evidenceUrl, setEvidenceUrl] = useState('');
     const [addCheckModal, setAddCheckModal] = useState({ open: false, domainId: null, domainTitle: '' });
+    const [editWorkspaceModal, setEditWorkspaceModal] = useState(false);
+    const [editCheckModal, setEditCheckModal] = useState({ open: false, check: null, domainId: null });
 
     // Fetch handover data from Supabase
     useEffect(() => {
@@ -204,6 +208,46 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
         }
     };
 
+    const handleEditWorkspace = async (updates) => {
+        try {
+            await updateHandover(workspaceId, updates);
+            setProject(prev => ({ ...prev, ...updates }));
+            setEditWorkspaceModal(false);
+        } catch (error) {
+            console.error('Error updating workspace:', error);
+            alert('Failed to update workspace');
+        }
+    };
+
+    const handleEditCheck = async (updates) => {
+        try {
+            await updateCheck(editCheckModal.check.id, updates);
+
+            setProject(prev => {
+                const newDomains = prev.domains.map(d => {
+                    if (d.id === editCheckModal.domainId) {
+                        return {
+                            ...d,
+                            checks: d.checks.map(c => {
+                                if (c.id === editCheckModal.check.id) {
+                                    return { ...c, ...updates };
+                                }
+                                return c;
+                            })
+                        };
+                    }
+                    return d;
+                });
+                return { ...prev, domains: newDomains };
+            });
+
+            setEditCheckModal({ open: false, check: null, domainId: null });
+        } catch (error) {
+            console.error('Error updating check:', error);
+            alert('Failed to update check');
+        }
+    };
+
     return (
         <Layout
             title={project?.name || 'Loading...'}
@@ -249,6 +293,13 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                             <div className="meta-row"><strong>Owner:</strong> {project.owner}</div>
                             <div className="meta-row"><strong>Go-Live:</strong> {project.targetDate}</div>
                         </div>
+                        <button
+                            className="icon-btn edit-workspace-btn"
+                            onClick={() => setEditWorkspaceModal(true)}
+                            title="Edit Workspace Details"
+                        >
+                            ✏️
+                        </button>
                     </div>
 
                     {/* Domains List */}
@@ -309,6 +360,17 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                                                                 onClick={() => cycleStatus(domain.id, check.id)}
                                                             >
                                                                 {check.status}
+                                                            </button>
+                                                            <button
+                                                                className="icon-btn"
+                                                                title="Edit Check"
+                                                                onClick={() => setEditCheckModal({
+                                                                    open: true,
+                                                                    check,
+                                                                    domainId: domain.id
+                                                                })}
+                                                            >
+                                                                ✏️
                                                             </button>
                                                             <button
                                                                 className="icon-btn"
@@ -388,6 +450,20 @@ const Workspace = ({ workspaceId, onBack, onNavigate }) => {
                 onClose={() => setAddCheckModal({ open: false, domainId: null, domainTitle: '' })}
                 onAdd={handleAddCheck}
                 domainTitle={addCheckModal.domainTitle}
+            />
+
+            <EditWorkspaceModal
+                isOpen={editWorkspaceModal}
+                onClose={() => setEditWorkspaceModal(false)}
+                workspace={project}
+                onSave={handleEditWorkspace}
+            />
+
+            <EditCheckModal
+                isOpen={editCheckModal.open}
+                onClose={() => setEditCheckModal({ open: false, check: null, domainId: null })}
+                check={editCheckModal.check}
+                onSave={handleEditCheck}
             />
         </Layout>
     );

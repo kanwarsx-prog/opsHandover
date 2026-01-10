@@ -12,6 +12,19 @@
     padding: var(--spacing-lg);
     gap: var(--spacing-xl);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    position: relative;
+}
+
+.edit-workspace-btn {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.edit-workspace-btn:hover {
+    opacity: 1;
 }
 
 .score-circle {

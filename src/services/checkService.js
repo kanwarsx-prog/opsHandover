@@ -243,3 +243,48 @@ export const deleteCheck = async (checkId) => {
     }
 };
 
+/**
+ * Update a check
+ * @param {string} checkId - Check ID (with 'c' prefix)
+ * @param {Object} updates - Fields to update
+ * @returns {Promise<Object>} Updated check
+ */
+export const updateCheck = async (checkId, updates) => {
+    if (!isSupabaseConfigured()) {
+        throw new Error('Supabase not configured');
+    }
+
+    try {
+        const numericId = parseInt(checkId.replace('c', ''));
+
+        const dbUpdates = {};
+        if (updates.title !== undefined) dbUpdates.title = updates.title;
+        if (updates.owner !== undefined) dbUpdates.owner = updates.owner;
+        if (updates.status !== undefined) dbUpdates.status = updates.status;
+        if (updates.blockerReason !== undefined) dbUpdates.blocker_reason = updates.blockerReason;
+        if (updates.requiresApproval !== undefined) dbUpdates.requires_approval = updates.requiresApproval;
+
+        const { data, error } = await supabase
+            .from('checks')
+            .update(dbUpdates)
+            .eq('id', numericId)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        console.log(`✓ Updated check ID: ${checkId}`);
+        return {
+            id: `c${data.id}`,
+            title: data.title,
+            status: data.status,
+            owner: data.owner,
+            blockerReason: data.blocker_reason,
+            requiresApproval: data.requires_approval,
+            approvalStatus: data.approval_status
+        };
+    } catch (error) {
+        console.error('Error updating check:', error);
+        throw error;
+    }
+};
