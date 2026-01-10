@@ -84,6 +84,12 @@ export const createHandover = async (handoverData) => {
     }
 
     try {
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            throw new Error('User not authenticated');
+        }
+
         const { data, error } = await supabase
             .from('handovers')
             .insert([{
@@ -93,7 +99,8 @@ export const createHandover = async (handoverData) => {
                 owner: handoverData.owner,
                 target_date: handoverData.targetDate,
                 status: handoverData.status || 'Not Ready',
-                score: handoverData.score || 0
+                score: handoverData.score || 0,
+                user_id: user.id  // Automatically set user_id
             }])
             .select()
             .single();
