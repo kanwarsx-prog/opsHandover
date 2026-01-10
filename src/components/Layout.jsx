@@ -1,8 +1,28 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import '../styles/layout.css';
 
 const Layout = ({ children, title, actions, currentView, onNavigate }) => {
+    const { user, signOut } = useAuth();
+
+    const handleLogout = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
+    // Get user initials for avatar
+    const getUserInitials = () => {
+        if (user?.user_metadata?.full_name) {
+            const names = user.user_metadata.full_name.split(' ');
+            return names.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+        return user?.email?.slice(0, 2).toUpperCase() || 'U';
+    };
+
     return (
         <div className="layout-container">
             <aside className="sidebar glass-panel">
@@ -40,10 +60,18 @@ const Layout = ({ children, title, actions, currentView, onNavigate }) => {
                 </div>
 
                 <div className="user-profile">
-                    <div className="avatar">AM</div>
+                    <div className="avatar">{getUserInitials()}</div>
                     <div className="user-info">
-                        <div className="name">Alex Morgan</div>
-                        <div className="role">Admin</div>
+                        <div className="name">
+                            {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                        </div>
+                        <button
+                            className="logout-btn"
+                            onClick={handleLogout}
+                            title="Logout"
+                        >
+                            Logout
+                        </button>
                     </div>
                 </div>
 

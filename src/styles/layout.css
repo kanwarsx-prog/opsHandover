@@ -111,6 +111,21 @@
     color: var(--text-dim);
 }
 
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: var(--color-danger);
+}
+
 .main-content {
     flex: 1;
     display: flex;

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Dashboard from './pages/Dashboard'
 import Workspace from './pages/Workspace'
 import Settings from './pages/Settings'
@@ -6,9 +7,13 @@ import NewHandover from './pages/NewHandover'
 import Analytics from './pages/Analytics'
 import TemplateLibrary from './pages/TemplateLibrary'
 import TemplateEditor from './components/TemplateEditor'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
+import ProtectedRoute from './components/ProtectedRoute'
 
-// Simple router for prototype
-function App() {
+// Main App Component (wrapped with auth)
+function AppContent() {
+  const { user, loading } = useAuth();
   const [currentView, setCurrentView] = useState('dashboard');
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(null);
   const [templateEditorId, setTemplateEditorId] = useState(null);
@@ -42,48 +47,77 @@ function App() {
       setActiveWorkspaceId(null);
     } else if (view === 'dashboard') {
       navigateToDashboard();
+    } else if (view === 'login') {
+      setCurrentView('login');
+    } else if (view === 'signup') {
+      setCurrentView('signup');
     } else {
       // Assume ID
       navigateToWorkspace(view);
     }
   };
 
+  // Show auth pages if not logged in
+  if (!loading && !user) {
+    return (
+      <div className="app-container">
+        {currentView === 'signup' ? (
+          <SignUp onNavigate={handleNavigate} />
+        ) : (
+          <Login onNavigate={handleNavigate} />
+        )}
+      </div>
+    );
+  }
+
+  // Show protected app content
   return (
-    <div className="app-container">
-      {currentView === 'dashboard' && (
-        <Dashboard onNavigate={handleNavigate} currentView="dashboard" />
-      )}
-      {currentView === 'workspace' && (
-        <Workspace
-          workspaceId={activeWorkspaceId}
-          onBack={navigateToDashboard}
-          currentView="workspace" // Though sidebar might still show Handovers active?
-          onNavigate={handleNavigate}
-        />
-      )}
-      {currentView === 'settings' && (
-        <Settings onNavigate={handleNavigate} />
-      )}
-      {currentView === 'create' && (
-        <NewHandover onNavigate={handleNavigate} />
-      )}
-      {currentView === 'analytics' && (
-        <Analytics onNavigate={handleNavigate} />
-      )}
-      {currentView === 'template-library' && (
-        <TemplateLibrary
-          onNavigate={handleNavigate}
-          onBack={navigateToDashboard}
-        />
-      )}
-      {currentView === 'template-editor' && (
-        <TemplateEditor
-          templateId={templateEditorId}
-          onNavigate={handleNavigate}
-          onBack={() => handleNavigate('template-library')}
-        />
-      )}
-    </div>
+    <ProtectedRoute>
+      <div className="app-container">
+        {currentView === 'dashboard' && (
+          <Dashboard onNavigate={handleNavigate} currentView="dashboard" />
+        )}
+        {currentView === 'workspace' && (
+          <Workspace
+            workspaceId={activeWorkspaceId}
+            onBack={navigateToDashboard}
+            currentView="workspace"
+            onNavigate={handleNavigate}
+          />
+        )}
+        {currentView === 'settings' && (
+          <Settings onNavigate={handleNavigate} />
+        )}
+        {currentView === 'create' && (
+          <NewHandover onNavigate={handleNavigate} />
+        )}
+        {currentView === 'analytics' && (
+          <Analytics onNavigate={handleNavigate} />
+        )}
+        {currentView === 'template-library' && (
+          <TemplateLibrary
+            onNavigate={handleNavigate}
+            onBack={navigateToDashboard}
+          />
+        )}
+        {currentView === 'template-editor' && (
+          <TemplateEditor
+            templateId={templateEditorId}
+            onNavigate={handleNavigate}
+            onBack={() => handleNavigate('template-library')}
+          />
+        )}
+      </div>
+    </ProtectedRoute>
+  )
+}
+
+// Wrapper with AuthProvider
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 
