@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import DomainEditor from '../components/DomainEditor';
 import { createTemplate, updateTemplate, fetchTemplateById } from '../services/templateService';
 import '../styles/templateEditor.css';
 
@@ -41,18 +42,42 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
     };
 
     const handleSave = async () => {
+        // Validation
         if (!template.name.trim()) {
-            alert('Please enter a template name');
+            setError('Template name is required');
             return;
         }
 
         if (template.domains.length === 0) {
-            alert('Please add at least one domain');
+            setError('At least one domain is required');
             return;
+        }
+
+        // Validate domains
+        for (let i = 0; i < template.domains.length; i++) {
+            const domain = template.domains[i];
+            if (!domain.title.trim()) {
+                setError(`Domain #${i + 1} requires a title`);
+                return;
+            }
+            if (domain.checks.length === 0) {
+                setError(`Domain "${domain.title}" must have at least one check`);
+                return;
+            }
+            // Validate checks
+            for (let j = 0; j < domain.checks.length; j++) {
+                const check = domain.checks[j];
+                if (!check.title.trim()) {
+                    setError(`Check #${j + 1} in "${domain.title}" requires a title`);
+                    return;
+                }
+            }
         }
 
         try {
             setSaving(true);
+            setError(null);
+
             if (templateId) {
                 await updateTemplate(templateId, {
                     name: template.name,
@@ -66,17 +91,29 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
             if (onSave) {
                 onSave();
             } else {
-                onNavigate('templates');
+                onNavigate('template-library');
             }
         } catch (err) {
             console.error('Error saving template:', err);
-            alert('Failed to save template');
+            setError(err.message || 'Failed to save template');
         } finally {
             setSaving(false);
         }
     };
 
-    const addDomain = () => {
+    const handleDomainUpdate = (index, updatedDomain) => {
+        const newDomains = [...template.domains];
+        newDomains[index] = updatedDomain;
+        setTemplate({ ...template, domains: newDomains });
+    };
+
+    const handleDomainDelete = (index) => {
+        if (!confirm('Delete this domain and all its checks?')) return;
+        const newDomains = template.domains.filter((_, i) => i !== index);
+        setTemplate({ ...template, domains: newDomains });
+    };
+
+    const handleAddDomain = () => {
         setTemplate({
             ...template,
             domains: [
@@ -90,73 +127,12 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
         });
     };
 
-    const updateDomain = (index, field, value) => {
-        const newDomains = [...template.domains];
-        newDomains[index] = {
-            ...newDomains[index],
-            [field]: value
-        };
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const deleteDomain = (index) => {
-        if (!confirm('Delete this domain and all its checks?')) return;
-        const newDomains = template.domains.filter((_, i) => i !== index);
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const moveDomain = (index, direction) => {
-        const newDomains = [...template.domains];
-        const newIndex = direction === 'up' ? index - 1 : index + 1;
-        if (newIndex < 0 || newIndex >= newDomains.length) return;
-
-        [newDomains[index], newDomains[newIndex]] = [newDomains[newIndex], newDomains[index]];
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const addCheck = (domainIndex) => {
-        const newDomains = [...template.domains];
-        newDomains[domainIndex].checks = [
-            ...newDomains[domainIndex].checks,
-            {
-                title: '',
-                ownerPlaceholder: '',
-                requiresApproval: false
-            }
-        ];
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const updateCheck = (domainIndex, checkIndex, field, value) => {
-        const newDomains = [...template.domains];
-        newDomains[domainIndex].checks[checkIndex] = {
-            ...newDomains[domainIndex].checks[checkIndex],
-            [field]: value
-        };
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const deleteCheck = (domainIndex, checkIndex) => {
-        const newDomains = [...template.domains];
-        newDomains[domainIndex].checks = newDomains[domainIndex].checks.filter((_, i) => i !== checkIndex);
-        setTemplate({ ...template, domains: newDomains });
-    };
-
-    const moveCheck = (domainIndex, checkIndex, direction) => {
-        const newDomains = [...template.domains];
-        const checks = newDomains[domainIndex].checks;
-        const newIndex = direction === 'up' ? checkIndex - 1 : checkIndex + 1;
-        if (newIndex < 0 || newIndex >= checks.length) return;
-
-        [checks[checkIndex], checks[newIndex]] = [checks[newIndex], checks[checkIndex]];
-        setTemplate({ ...template, domains: newDomains });
-    };
-
     if (loading) {
         return (
-            <Layout title="Template Editor" currentView="templates" onNavigate={onNavigate}>
-                <div style={{ textAlign: 'center', padding: '40px' }}>
-                    Loading template...
+            <Layout title="Template Editor" currentView="template-library" onNavigate={onNavigate}>
+                <div className="loading-container">
+                    <div className="spinner"></div>
+                    <p>Loading template...</p>
                 </div>
             </Layout>
         );
@@ -165,11 +141,11 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
     return (
         <Layout
             title={templateId ? 'Edit Template' : 'Create Template'}
-            currentView="templates"
+            currentView="template-library"
             onNavigate={onNavigate}
             actions={
                 <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="btn-secondary" onClick={onBack}>
+                    <button className="btn-secondary" onClick={onBack} disabled={saving}>
                         Cancel
                     </button>
                     <button
@@ -177,13 +153,31 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                         onClick={handleSave}
                         disabled={saving}
                     >
-                        {saving ? 'Saving...' : 'Save Template'}
+                        {saving ? (
+                            <>
+                                <span className="spinner"></span>
+                                Saving...
+                            </>
+                        ) : (
+                            'Save Template'
+                        )}
                     </button>
                 </div>
             }
         >
             <div className="template-editor-container">
-                {error && <div className="error-message">{error}</div>}
+                {error && (
+                    <div className="error-banner">
+                        <span className="error-icon">⚠️</span>
+                        <span className="error-message">{error}</span>
+                        <button
+                            className="error-dismiss"
+                            onClick={() => setError(null)}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
 
                 {/* Template Metadata */}
                 <div className="editor-section glass-panel">
@@ -197,6 +191,7 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                             onChange={(e) => setTemplate({ ...template, name: e.target.value })}
                             placeholder="e.g., Cloud Migration Checklist"
                             className="form-input"
+                            disabled={saving}
                         />
                     </div>
 
@@ -208,6 +203,7 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                             placeholder="Describe what this template is for..."
                             className="form-textarea"
                             rows="3"
+                            disabled={saving}
                         />
                     </div>
 
@@ -218,6 +214,7 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                                 value={template.category}
                                 onChange={(e) => setTemplate({ ...template, category: e.target.value })}
                                 className="form-select"
+                                disabled={saving}
                             >
                                 <option value="user">Custom</option>
                                 <option value="organization">Organization</option>
@@ -230,6 +227,7 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                                     type="checkbox"
                                     checked={template.isPublic}
                                     onChange={(e) => setTemplate({ ...template, isPublic: e.target.checked })}
+                                    disabled={saving}
                                 />
                                 Make this template public
                             </label>
@@ -241,145 +239,32 @@ const TemplateEditor = ({ templateId, onBack, onNavigate, onSave }) => {
                 <div className="editor-section">
                     <div className="section-header">
                         <h3>Domains & Checks</h3>
-                        <button className="btn-primary btn-sm" onClick={addDomain}>
+                        <button
+                            className="btn-primary btn-sm"
+                            onClick={handleAddDomain}
+                            disabled={saving}
+                        >
                             + Add Domain
                         </button>
                     </div>
 
-                    {template.domains.map((domain, domainIndex) => (
-                        <div key={domainIndex} className="domain-editor glass-panel">
-                            <div className="domain-header">
-                                <div className="domain-controls">
-                                    <button
-                                        className="icon-btn"
-                                        onClick={() => moveDomain(domainIndex, 'up')}
-                                        disabled={domainIndex === 0}
-                                        title="Move up"
-                                    >
-                                        ↑
-                                    </button>
-                                    <button
-                                        className="icon-btn"
-                                        onClick={() => moveDomain(domainIndex, 'down')}
-                                        disabled={domainIndex === template.domains.length - 1}
-                                        title="Move down"
-                                    >
-                                        ↓
-                                    </button>
-                                    <span className="domain-number">Domain {domainIndex + 1}</span>
-                                </div>
-                                <button
-                                    className="icon-btn delete-btn"
-                                    onClick={() => deleteDomain(domainIndex)}
-                                    title="Delete domain"
-                                >
-                                    🗑️
-                                </button>
+                    <div className="domains-list">
+                        {template.domains.length === 0 ? (
+                            <div className="empty-domains glass-panel">
+                                <p>No domains yet. Click "+ Add Domain" to get started.</p>
                             </div>
-
-                            <div className="form-group">
-                                <label>Domain Title *</label>
-                                <input
-                                    type="text"
-                                    value={domain.title}
-                                    onChange={(e) => updateDomain(domainIndex, 'title', e.target.value)}
-                                    placeholder="e.g., Technology & Infrastructure"
-                                    className="form-input"
+                        ) : (
+                            template.domains.map((domain, index) => (
+                                <DomainEditor
+                                    key={index}
+                                    domain={domain}
+                                    index={index}
+                                    onUpdate={handleDomainUpdate}
+                                    onDelete={handleDomainDelete}
                                 />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Description</label>
-                                <input
-                                    type="text"
-                                    value={domain.description}
-                                    onChange={(e) => updateDomain(domainIndex, 'description', e.target.value)}
-                                    placeholder="Brief description of this domain"
-                                    className="form-input"
-                                />
-                            </div>
-
-                            {/* Checks */}
-                            <div className="checks-section">
-                                <div className="checks-header">
-                                    <h4>Checks</h4>
-                                    <button
-                                        className="btn-secondary btn-sm"
-                                        onClick={() => addCheck(domainIndex)}
-                                    >
-                                        + Add Check
-                                    </button>
-                                </div>
-
-                                {domain.checks.map((check, checkIndex) => (
-                                    <div key={checkIndex} className="check-editor">
-                                        <div className="check-controls">
-                                            <button
-                                                className="icon-btn-sm"
-                                                onClick={() => moveCheck(domainIndex, checkIndex, 'up')}
-                                                disabled={checkIndex === 0}
-                                            >
-                                                ↑
-                                            </button>
-                                            <button
-                                                className="icon-btn-sm"
-                                                onClick={() => moveCheck(domainIndex, checkIndex, 'down')}
-                                                disabled={checkIndex === domain.checks.length - 1}
-                                            >
-                                                ↓
-                                            </button>
-                                            <span className="check-number">{checkIndex + 1}.</span>
-                                        </div>
-
-                                        <div className="check-fields">
-                                            <input
-                                                type="text"
-                                                value={check.title}
-                                                onChange={(e) => updateCheck(domainIndex, checkIndex, 'title', e.target.value)}
-                                                placeholder="Check title"
-                                                className="form-input"
-                                            />
-                                            <input
-                                                type="text"
-                                                value={check.ownerPlaceholder}
-                                                onChange={(e) => updateCheck(domainIndex, checkIndex, 'ownerPlaceholder', e.target.value)}
-                                                placeholder="Owner (e.g., DevOps Team)"
-                                                className="form-input"
-                                            />
-                                            <label className="checkbox-label">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={check.requiresApproval}
-                                                    onChange={(e) => updateCheck(domainIndex, checkIndex, 'requiresApproval', e.target.checked)}
-                                                />
-                                                Requires Approval
-                                            </label>
-                                        </div>
-
-                                        <button
-                                            className="icon-btn-sm delete-btn"
-                                            onClick={() => deleteCheck(domainIndex, checkIndex)}
-                                            title="Delete check"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-
-                                {domain.checks.length === 0 && (
-                                    <div className="empty-checks">
-                                        No checks yet. Click "Add Check" to create one.
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-
-                    {template.domains.length === 0 && (
-                        <div className="empty-domains glass-panel">
-                            <p>No domains yet. Click "Add Domain" to get started.</p>
-                        </div>
-                    )}
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </Layout>
