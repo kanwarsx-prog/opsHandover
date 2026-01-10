@@ -84,7 +84,7 @@ const DrillDownModal = ({ isOpen, onClose, title, handovers, onNavigate }) => {
                                     <tr
                                         key={handover.id}
                                         onClick={() => {
-                                            onNavigate('workspace', handover.id);
+                                            onNavigate(handover.id);
                                             onClose();
                                         }}
                                         className="handover-row"
