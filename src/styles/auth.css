@@ -30,8 +30,17 @@
     margin-bottom: var(--spacing-lg);
 }
 
-.logo-icon {
-    font-size: 32px;
+.logo-icon-box {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #000;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
 }
 
 .logo-text {
@@ -157,6 +166,28 @@
     font-size: 13px;
     color: var(--text-secondary);
     margin: var(--spacing-sm) 0;
+}
+
+/* Button styling for auth pages */
+.auth-form .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: #000;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.auth-form .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    color: #000;
+    /* Ensure text stays dark on hover */
+}
+
+.auth-form .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

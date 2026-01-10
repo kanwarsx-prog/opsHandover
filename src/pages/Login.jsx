@@ -31,7 +31,7 @@ const Login = ({ onNavigate }) => {
             <div className="auth-card glass-panel">
                 <div className="auth-header">
                     <div className="app-logo">
-                        <span className="logo-icon">📋</span>
+                        <div className="logo-icon-box">OH</div>
                         <span className="logo-text">OpsHandover</span>
                     </div>
                     <h2>Welcome Back</h2>
