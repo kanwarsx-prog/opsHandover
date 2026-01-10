@@ -35,7 +35,7 @@ const Login = ({ onNavigate }) => {
                         <span className="logo-text">OpsHandover</span>
                     </div>
                     <h2>Welcome Back</h2>
-                    <p>Enter your email to receive a magic link</p>
+                    <p>Enter your email to receive a sign-in link</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form">

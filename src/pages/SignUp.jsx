@@ -18,11 +18,11 @@ const SignUp = ({ onNavigate }) => {
 
         try {
             await signUp(email, { full_name: name });
-            setMessage('Check your email for the magic link to complete sign-up!');
+            setMessage('Check your email for the sign-in link to complete sign-up!');
             setEmail('');
             setName('');
         } catch (err) {
-            setError(err.message || 'Failed to send magic link');
+            setError(err.message || 'Failed to send sign-in link');
         } finally {
             setLoading(false);
         }
