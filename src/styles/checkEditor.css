@@ -85,16 +85,17 @@
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px !important;
     cursor: pointer;
     user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 20px !important;
+    height: 20px !important;
     cursor: pointer;
     accent-color: var(--primary);
+    flex-shrink: 0;
 }
 
 .checkbox-label span {

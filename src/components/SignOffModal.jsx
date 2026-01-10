@@ -72,7 +72,7 @@ const SignOffModal = ({ isOpen, onClose, project, onConfirm }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content signoff-modal glass-panel">
+            <div className="modal-content signoff-modal">
 
                 {/* 4.1 Context Header */}
                 <div className="signoff-header">
