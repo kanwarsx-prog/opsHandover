@@ -30,17 +30,10 @@
     margin-bottom: var(--spacing-lg);
 }
 
-.logo-icon-box {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: #000;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
+.logo-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
 }
 
 .logo-text {
